@@ -1,8 +1,10 @@
 #include <stdlib.h>
+#include <string>
+
 #include "SDL.h"
 #include "SDL_image.h"
 #include "graphics.h"
-#include <string>
+#include "simple_logger.h"
 
 extern SDL_Surface *screen;
 extern SDL_Surface *buffer; /*pointer to the draw buffer*/
@@ -36,7 +38,7 @@ int main(int argc, char *argv[])
     SDL_BlitSurface(temp,NULL,buffer,NULL);
   gt_graphics_render_surface_to_screen(temp,srcRect,0,0);
   SDL_FreeSurface(temp);
-
+  
   done = 0;
   do
   {
