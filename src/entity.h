@@ -1,8 +1,13 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
-#include "vector.h"
+#include "string.h"
+#include "stdlib.h"
+
+#include "graphics.h"
+#include "simple_logger.h"
 #include "sprite.h"
+#include "vector.h"
 
 /**
  * @brief the core data structure for our entity system
@@ -28,7 +33,7 @@ typedef struct Entity_S
  * @brief initializes entity system and queues up cleanup on exit
  * @param maxEntities how many entities the system should support. Should not be zero
  */
-void entity_initialize_system(Uint32 entityMax);
+void entity_initialize_system();
 
 void entity_close_system();
 
@@ -45,7 +50,7 @@ void entity_think_all();
 void entity_update_all();
 void entity_draw_all();
 
-bool entity_draw(Entity *entity, int frame, SDL_Renderer *renderer, int frameW, int frameH);
+bool entity_draw(Entity *entity, int frame, int frameW, int frameH);
 
 /*int entity_intersect(Entity *a, Entity *b);
 Rect rect(int a, int b, int c, int d);*/

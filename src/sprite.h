@@ -1,10 +1,15 @@
 #ifndef __SPRITE_H__
 #define __SPRITE_H__
 
+#include "string.h"
+#include "string.h"
+#include "stdlib.h"
+
 #include "SDL.h"
 #include "SDL_image.h"
-#include "SDL_ttf.h"
 
+#include "graphics.h"
+#include "simple_logger.h"
 #include "vector.h"
 
 typedef struct
@@ -17,10 +22,10 @@ typedef struct
 	int fpl;				/**<how many frames per line in this sprite sheet*/
 } Sprite;
 
-void sprite_initialize_system(int spriteMax);
+void sprite_initialize_system();
 void sprite_close_system();
 
-Sprite *sprite_load(char *filename, SDL_Renderer *renderer, int frameW, int frameH);
+Sprite *sprite_load(char *filename, int frameW, int frameH);
 
 /**
  * @brief frees a loaded sprite from memory
@@ -29,6 +34,8 @@ Sprite *sprite_load(char *filename, SDL_Renderer *renderer, int frameW, int fram
 void sprite_free(Sprite **sprite);
 
 
-void sprite_draw(Sprite *sprite, int frame, SDL_Renderer *renderer, int frameW, int frameH);
+void sprite_draw(Sprite *sprite, int frame, int frameW, int frameH);
+void sprite_initialize_mouse();
+void sprite_draw_mouse();
 
 #endif

@@ -1,32 +1,18 @@
-#include <string>
-#include <string.h>
-#include <stdlib.h>
-
 #include "entity.h"
-#include "simple_logger.h"
 
 static Entity *entity_list = NULL;
-static int entity_max = 0;
+const int ENTITY_MAX = 1000;
 
-void entity_close_system();
-
-void entity_initialize_system(int entityMax)
+void entity_initialize_system()
 {
-	if(entityMax == 0)
-	{
-		slog("cannot allocate zero Entities!");
-		return;
-	}
-
-	entity_list = (Entity *)malloc(sizeof(Entity) * entityMax);
+	entity_list = (Entity *)malloc(sizeof(Entity) * ENTITY_MAX);
 	if(!entity_list)
 	{
 		slog("failed to allocate Entity system");
 		return;
 	}
 
-	memset(entity_list, 0, sizeof(Entity) * entityMax);
-	entity_max = entityMax;
+	memset(entity_list, 0, sizeof(Entity) * ENTITY_MAX);
 	atexit(entity_close_system);
 }
 
@@ -34,7 +20,7 @@ void entity_close_system()
 {
 	int i;
 	Entity *entity;
-	for(i = 0; i < entity_max; i++)
+	for(i = 0; i < ENTITY_MAX; i++)
 	{
 		entity = &entity_list[i];
 		entity_free(&entity);
@@ -45,7 +31,7 @@ void entity_close_system()
 Entity *entity_new()
 {
 	int i;
-	for(i = 0; i < entity_max; i++)
+	for(i = 0; i < ENTITY_MAX; i++)
 	{
 		if(entity_list[i].inuse)
 		{
@@ -75,7 +61,7 @@ void entity_free(Entity **entity)
 void entity_think_all()
 {
 	int i;
-	for(i = 0; i < entity_max; i++)
+	for(i = 0; i < ENTITY_MAX; i++)
 	{
 		if(!entity_list[i].inuse)
 		{
@@ -94,7 +80,7 @@ void entity_think_all()
 void entity_update_all()
 {
 	int i;
-	for(i = 0; i < entity_max; i++)
+	for(i = 0; i < ENTITY_MAX; i++)
 	{
 		if(!entity_list[i].inuse)
 		{
@@ -116,7 +102,7 @@ void entity_update_all()
 {
 	int i;
 	if(!a) return NULL;
-	for(i = 0; i < entity_max; i++)
+	for(i = 0; i < ENTITY_MAX; i++)
 	{
 		if(!entity_list[i].inuse)
 		{

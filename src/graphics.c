@@ -1,13 +1,18 @@
-#include "stdlib.h"
-
 #include "graphics.h"
-#include "simple_logger.h"
+
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 480;
 
 SDL_Window *graphics_window = NULL;
-static SDL_Renderer *graphics_renderer = NULL;
-static SDL_Texture *graphics_texture = NULL;
 SDL_Surface *graphics_surface = NULL;
-static SDL_Surface *graphics_temp_surface = NULL;
+SDL_Renderer *graphics_renderer = NULL;
+SDL_Texture *graphics_texture = NULL;
+
+static Uint32 graphics_frame_delay = 30;
+static Uint32 graphics_now = 0;
+static Uint32 graphics_then = 0;
+static Uint8 graphics_print_fps = 1;
+static float graphics_fps = 0; 
 
 void graphics_initialize_system(char *windowName, int renderWidth, int renderHeight, int fullscreen)
 {
@@ -37,7 +42,35 @@ void graphics_initialize_system(char *windowName, int renderWidth, int renderHei
 		return;
 	}
 
-	graphics_surface = SDL_GetWindowSurface(graphics_window);
+	graphics_renderer = SDL_CreateRenderer(graphics_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+    if (!graphics_renderer)
+    {
+		slog("failed to create renderer: %s",SDL_GetError());
+        graphics_close_system();
+        return;
+    }
+
+	SDL_SetRenderDrawColor(graphics_renderer, 0, 0, 0, 255);
+    SDL_RenderClear(graphics_renderer);
+    SDL_RenderPresent(graphics_renderer);
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+    SDL_RenderSetLogicalSize(graphics_renderer, renderWidth, renderHeight);
+
+	graphics_texture = SDL_CreateTexture(graphics_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, renderWidth, renderHeight);
+    if (!graphics_texture)
+    {
+        slog("failed to create screen texture: %s",SDL_GetError());
+        graphics_close_system();
+        return;
+    };
+
+	/*graphics_surface = SDL_GetWindowSurface(graphics_window);
+	if (!graphics_surface)
+    {
+        slog("failed to create screen surface: %s",SDL_GetError());
+        graphics_close_system();
+        return;
+    }*/
 
 	atexit(graphics_close_system);
 	slog("graphics initialized");
@@ -46,71 +79,43 @@ void graphics_initialize_system(char *windowName, int renderWidth, int renderHei
 void graphics_close_system()
 {
 	if(graphics_window)
+	{
 		SDL_DestroyWindow(graphics_window);
+	}
 	if(graphics_renderer)
+	{
 		SDL_DestroyRenderer(graphics_renderer);
+	}
 	if(graphics_texture)
+	{
 		SDL_DestroyTexture(graphics_texture);
+	}
 	if(graphics_surface)
+	{
 		SDL_FreeSurface(graphics_surface);
-	if(graphics_temp_surface)
-		SDL_FreeSurface(graphics_temp_surface);
+	}
 	
 	SDL_Window *graphics_window = NULL;
 	SDL_Renderer *graphics_renderer = NULL;
 	SDL_Texture *graphics_texture = NULL;
 	SDL_Surface *graphics_surface = NULL;
-	SDL_Surface *graphics_temp_surface = NULL;
 }
 
-void graphics_render_surface_to_screen(SDL_Surface *surface, SDL_Rect srcRect, int x, int y)
+void graphics_delay_frame()
 {
-    SDL_Rect dstRect;
-    SDL_Point point = {1, 1};
-    int w, h;
-
-    if (!graphics_texture)
+    Uint32 diff;
+    graphics_then = graphics_now;
+    graphics_now = SDL_GetTicks();
+    diff = (graphics_now - graphics_then);
+    if (diff < graphics_frame_delay)
     {
-        slog("graphics_render_surface_to_screen: no texture available");
-        return;
+        SDL_Delay(graphics_frame_delay - diff);
     }
-    if (!surface)
-    {
-        slog("graphics_render_surface_to_screen: no surface provided");
-        return;
-    }
-
-    SDL_QueryTexture(graphics_texture, NULL, NULL, &w, &h);
-
-    /*check if resize is needed*/
-    if ((surface->w > w) || (surface->h > h))
-    {
-        SDL_DestroyTexture(graphics_texture);
-        graphics_texture = SDL_CreateTexture(graphics_renderer,
-                                                   graphics_surface->format->format,
-                                                   SDL_TEXTUREACCESS_STREAMING, 
-                                                   surface->w,
-                                                   surface->h);
-        if (!graphics_texture)
-        {
-            slog("gt_graphics_render_surface_to_screen: failed to allocate more space for the screen texture!");
-            return;
-        }
-    }
-
-    SDL_SetTextureBlendMode(graphics_texture,SDL_BLENDMODE_BLEND);        
-    SDL_UpdateTexture(graphics_texture, &srcRect, surface->pixels, surface->pitch);
-
-    dstRect.x = x;
-    dstRect.y = y;
-    dstRect.w = srcRect.w;
-    dstRect.h = srcRect.h;
-
-    SDL_RenderCopy(graphics_renderer, graphics_texture, &srcRect, &dstRect);
+    graphics_fps = 1000.0 / MAX(SDL_GetTicks() - graphics_then, 0.001);
 }
 
-void graphics_reset_buffer()
+void graphics_next_frame()
 {
 	SDL_RenderPresent(graphics_renderer);
+	graphics_delay_frame();
 }
-

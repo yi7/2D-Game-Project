@@ -3,9 +3,11 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-#include "simple_logger.h"
+#include "entity.h"
 #include "graphics.h"
+#include "simple_logger.h"
 #include "sprite.h"
+#include "tilemap.h"
 
 extern SDL_Window *graphics_window;
 extern SDL_Surface *graphics_surface;
@@ -22,7 +24,7 @@ int main(int argc, char *argv[])
 	char imagepath[512];
 
 	game_initialize_system();
-	if(game_get_image_path_from_file(imagepath, "config.ini"))
+	/*if(game_get_image_path_from_file(imagepath, "config.ini"))
 	{
 		temp = IMG_Load(imagepath);
 	}
@@ -34,13 +36,14 @@ int main(int argc, char *argv[])
 		
 	}
 	SDL_BlitSurface(optimized_surface, NULL, graphics_surface, NULL);
-	SDL_UpdateWindowSurface(graphics_window);
+	SDL_UpdateWindowSurface(graphics_window);*/
 
 	SDL_Event e;
 	done = 0;
 	do
 	{
-		graphics_reset_buffer();
+		//sprite_draw_mouse();
+		graphics_next_frame();
 		SDL_PumpEvents();
 
 		while(SDL_PollEvent(&e) != 0)
@@ -64,12 +67,16 @@ int main(int argc, char *argv[])
 
 void game_close_system()
 {
-	sprite_close_system();
+	//sprite_close_system();
 }
 
 void game_initialize_system()
 {
-	graphics_initialize_system("Game Test", 800, 400, 0);
+	graphics_initialize_system("Game Test", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+	tilemap_initialize_system();
+	entity_initialize_system();
+	sprite_initialize_system();
+	sprite_initialize_mouse();	
 	atexit(game_close_system);
 }
 

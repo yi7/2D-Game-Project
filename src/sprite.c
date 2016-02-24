@@ -1,31 +1,30 @@
-#include "string"
-#include "string.h"
-#include "stdlib.h"
-
 #include "sprite.h"
-#include "simple_logger.h"
 
 static Sprite *sprite_list = NULL;
-static Uint32 sprite_max = 0;
+const int SPRITE_MAX = 1000;
 int sprite_num;
+//extern SDL_Renderer *graphics_renderer;
 
-void sprite_initialize_system(int spriteMax)
+struct
 {
-	if(spriteMax == 0)
-	{
-		slog("cannot allocate zero sprites!");
-        return;
-	}
+	Uint32 state;
+	Uint32 shown;
+	Uint32 frame;
+	Uint16 x, y;
+} Mouse;
 
-	sprite_list = (Sprite *)malloc(sizeof(Sprite) * spriteMax);
+Sprite *sprite_mouse;
+
+void sprite_initialize_system()
+{
+	sprite_list = (Sprite *)malloc(sizeof(Sprite) * SPRITE_MAX);
 	if(!sprite_list)
 	{
-		slog("failed to allocate sprite system.");
+		slog("Error: failed to allocate sprite system.");
         return;
 	}
 	
-	memset(sprite_list, 0, sizeof(Sprite) * spriteMax);
-	sprite_max = spriteMax;
+	memset(sprite_list, 0, sizeof(Sprite) * SPRITE_MAX);
 	sprite_num = 0;
 	atexit(sprite_close_system);
 }
@@ -38,7 +37,7 @@ void sprite_close_system()
         return;
     }
 
-    for (i = 0; i < sprite_max; i++)
+    for (i = 0; i < SPRITE_MAX; i++)
     {
         if (sprite_list[i].image != 0)
         {
@@ -48,10 +47,9 @@ void sprite_close_system()
 
     free(sprite_list);
     sprite_list = NULL;
-    sprite_max = 0;
 }
 
-Sprite *sprite_load(char *filename, SDL_Renderer *renderer, int frameW, int frameH)
+Sprite *sprite_load(char *filename, int frameW, int frameH)
 {
 	int i;
 	SDL_Surface *temp;
@@ -63,7 +61,7 @@ Sprite *sprite_load(char *filename, SDL_Renderer *renderer, int frameW, int fram
 	}
 
 	/*first search to see if the requested sprite image is alreday loaded*/
-	for(i = 0; i < sprite_max; i++)
+	for(i = 0; i < SPRITE_MAX; i++)
 	{
 		if (sprite_list[i].refCount == 0)
         {
@@ -77,9 +75,9 @@ Sprite *sprite_load(char *filename, SDL_Renderer *renderer, int frameW, int fram
 	}
 
 	/*makesure we have the room for a new sprite*/
-	if(sprite_num + 1 >= sprite_max)
+	if(sprite_num + 1 >= SPRITE_MAX)
 	{
-		fprintf(stderr, "Maximum Sprites Reached.\n");
+		slog("Maximum Sprites Reached.\n");
 		exit(1);
 	}
 	sprite_num++;
@@ -93,14 +91,14 @@ Sprite *sprite_load(char *filename, SDL_Renderer *renderer, int frameW, int fram
 	temp = IMG_Load(filename);
 	if(!temp)
 	{
-		fprintf(stderr,"unable to load a vital sprite: %s\n", SDL_GetError());
+		slog("unable to load a vital sprite: %s\n", SDL_GetError());
 		exit(0);
 	}
 
 	/*sets a transparent color for blitting.*/
 	SDL_SetColorKey(temp, SDL_TRUE, SDL_MapRGB(temp->format, 255,255,255));
 
-	sprite_list[i].image = SDL_CreateTextureFromSurface(renderer, temp);
+	sprite_list[i].image = SDL_CreateTextureFromSurface(graphics_renderer, temp);
 	SDL_FreeSurface(temp);
 
 	/*then copy the given information to the sprite*/
@@ -133,10 +131,10 @@ void sprite_free(Sprite **sprite)
 	*sprite = NULL;
 }
 
-void sprite_draw(Sprite *sprite, int frame, SDL_Renderer *renderer, int frameW, int frameH)
+void sprite_draw(Sprite *sprite, int frame, int frameW, int frameH)
 {
-	SDL_Rect src,dest;
-	if ((!sprite) || (!renderer))
+	SDL_Rect src, dest;
+	if ((!sprite) || (!graphics_renderer))
 		return;
 	src.x = frame % sprite->fpl * sprite->frameSize.x;
 	src.y = frame / sprite->fpl * sprite->frameSize.y;
@@ -146,5 +144,30 @@ void sprite_draw(Sprite *sprite, int frame, SDL_Renderer *renderer, int frameW, 
 	dest.y = frameH;
 	dest.w = sprite->frameSize.x;
 	dest.h = sprite->frameSize.y;
-	SDL_RenderCopy(renderer, sprite->image, &src, &dest);  
+	SDL_RenderCopy(graphics_renderer, sprite->image, &src, &dest);  
+}
+
+void sprite_initialize_mouse()
+{
+	sprite_mouse = sprite_load("images/mouse.png", 16, 16);
+	if(!sprite_mouse)
+	{
+		slog("Error: could not initialize mouse");
+	}
+	Mouse.state = 0;
+	Mouse.shown = 0;
+	Mouse.frame = 0;
+}
+
+void sprite_draw_mouse()
+{
+	int mx, my;
+	SDL_GetMouseState(&mx, &my);
+	if(sprite_mouse)
+	{
+		sprite_draw(sprite_mouse, Mouse.frame, mx, my);
+	}
+	Mouse.frame = (Mouse.frame + 1) % 16;
+	Mouse.x = mx;
+	Mouse.y = my;
 }
