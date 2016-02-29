@@ -11,6 +11,8 @@
 #include "simple_logger.h"
 #include "sprite.h"
 
+extern SDL_Rect tilemap_bound;
+
 typedef struct
 {
 	SDL_Rect tile_box; /**<the attributes of the tile*/

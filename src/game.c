@@ -1,10 +1,14 @@
-#include "SDL.h"
-#include "SDL_image.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include "windows.h"
+
+#include "SDL.h"
+#include "SDL_image.h"
 
 #include "entity.h"
 #include "graphics.h"
+#include "mice.h"
+#include "mouse.h"
 #include "simple_logger.h"
 #include "sprite.h"
 #include "tilemap.h"
@@ -38,13 +42,29 @@ int main(int argc, char *argv[])
 	SDL_BlitSurface(optimized_surface, NULL, graphics_surface, NULL);
 	SDL_UpdateWindowSurface(graphics_window);*/
 
+	mice_initialize();
+
+	int timer = 0, miceCount = 0;
 	SDL_Event e;
 	done = 0;
 	do
 	{
-		//sprite_draw_mouse();
+		if(timer % 100 == 0 && miceCount < 7) {
+			miceCount++;
+			mice_initialize();
+			timer = 0;
+		}
+		timer++;
+
+		tilemap_render_tile();
+		//mice_draw();
+		entity_draw_all();
+
 		graphics_next_frame();
 		SDL_PumpEvents();
+
+		//mice_move();
+		entity_think_all();
 
 		while(SDL_PollEvent(&e) != 0)
 		{
@@ -59,6 +79,9 @@ int main(int argc, char *argv[])
 		{
 			done = 1;
 		}
+
+		SDL_RenderPresent(graphics_renderer); // update the screen with any rendering performed since previous call
+
 	} while(!done);
 
 	exit(0);
@@ -73,10 +96,10 @@ void game_close_system()
 void game_initialize_system()
 {
 	graphics_initialize_system("Game Test", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
-	tilemap_initialize_system();
-	entity_initialize_system();
 	sprite_initialize_system();
-	sprite_initialize_mouse();	
+	entity_initialize_system();
+	tilemap_initialize_system();
+	mouse_initialize_self();	
 	atexit(game_close_system);
 }
 

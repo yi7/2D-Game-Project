@@ -25,7 +25,7 @@ typedef struct
 void sprite_initialize_system();
 void sprite_close_system();
 
-Sprite *sprite_load(char *filename, int frameW, int frameH);
+Sprite* sprite_load(char *filename, int frameW, int frameH);
 
 /**
  * @brief frees a loaded sprite from memory
@@ -34,8 +34,6 @@ Sprite *sprite_load(char *filename, int frameW, int frameH);
 void sprite_free(Sprite **sprite);
 
 
-void sprite_draw(Sprite *sprite, int frame, int frameW, int frameH);
-void sprite_initialize_mouse();
-void sprite_draw_mouse();
+void sprite_draw(Sprite *sprite, int frame, int drawX, int drawY);
 
 #endif

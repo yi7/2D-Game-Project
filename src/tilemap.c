@@ -1,26 +1,32 @@
 #include "tilemap.h"
 
-const int TILE_MAX = 60; //10x6
-const int TILE_MAX_SPRITES = 12;
-const int TILE_WIDTH = 80;
-const int TILE_HEIGHT = 80;
+const int TILE_MAX		= 240; //20x12
+const int TILE_WIDTH	= 40;
+const int TILE_HEIGHT	= 40;
 
-const int TILE_RED = 0;
-const int TILE_GREEN = 1;
-const int TILE_BLUE = 2;
-const int TILE_TOPLEFT = 3;
-const int TILE_LEFT = 4;
-const int TILE_BOTLEFT = 5;
-const int TILE_TOP = 6;
-const int TILE_MID = 7;
-const int TILE_BOT = 8;
+const int TILE_MAP_WIDTH = SCREEN_WIDTH - 160;
+const int TILE_MAP_HEIGHT = SCREEN_HEIGHT;
+
+const int TILE_MAX_SPRITES = 12;
+const int TILE_RED		= 0;
+const int TILE_GREEN	= 1;
+const int TILE_BLUE		= 2;
+const int TILE_TOPLEFT	= 3;
+const int TILE_LEFT		= 4;
+const int TILE_BOTLEFT  = 5;
+const int TILE_TOP		= 6;
+const int TILE_MID		= 7;
+const int TILE_BOT		= 8;
 const int TILE_TOPRIGHT = 9;
-const int TILE_RIGHT = 10;
+const int TILE_RIGHT	= 10;
 const int TILE_BOTRIGHT = 11;
 
 static Tile *tile_list = NULL;
 SDL_Texture *tilemap_tile = NULL;
 SDL_Rect tile_clips[TILE_MAX_SPRITES];
+SDL_Rect tilemap_bound;
+
+Sprite *tilemap;
 
 void tilemap_initialize_system()
 {
@@ -44,6 +50,11 @@ void tilemap_initialize_system()
 	{
 		tile_list[i].tile_box = temp;
 	}
+
+	tilemap_bound.x = 0;
+	tilemap_bound.y = 0;
+	tilemap_bound.w = TILE_MAP_WIDTH;
+	tilemap_bound.h = TILE_MAP_HEIGHT;
 
 	tilemap_load_tile("images/tiles.png");
 	tilemap_set_tile();
@@ -92,6 +103,10 @@ void tilemap_set_tile()
 	int i;
 	int x = 0, y = 0;
 	Tile *tile;
+	FILE *tilemap;
+	int tiletype;
+
+	tilemap = fopen("images/level.map", "r");
 
 	for(i = 0; i < TILE_MAX; i++)
 	{
@@ -101,12 +116,8 @@ void tilemap_set_tile()
 		tile->tile_box.w = TILE_WIDTH;
 		tile->tile_box.h = TILE_HEIGHT;
 
-		if(i % 2 == 0)
-			tile->tile_type = TILE_RED;
-		else if(i % 3 == 0)
-			tile->tile_type = TILE_BLUE;
-		else
-			tile->tile_type = TILE_GREEN;
+		fscanf(tilemap, "%d", &tiletype);
+		tile->tile_type = tiletype;
 
 		x += TILE_WIDTH;
 		if(x >= SCREEN_WIDTH)
@@ -117,68 +128,67 @@ void tilemap_set_tile()
 	}
 
 	//clip the sprite sheet
-	if(tile->tile_type)
-	{
-		tile_clips[TILE_RED].x = 0;
-		tile_clips[TILE_RED].y = 0;
-		tile_clips[TILE_RED].w = TILE_WIDTH;
-		tile_clips[TILE_RED].h = TILE_HEIGHT;
+	tile_clips[TILE_RED].x = 0;
+	tile_clips[TILE_RED].y = 0;
+	tile_clips[TILE_RED].w = TILE_WIDTH;
+	tile_clips[TILE_RED].h = TILE_HEIGHT;
 
-		tile_clips[TILE_GREEN].x = 0;
-		tile_clips[TILE_GREEN].y = 80;
-		tile_clips[TILE_GREEN].w = TILE_WIDTH;
-		tile_clips[TILE_GREEN].h = TILE_HEIGHT;
+	tile_clips[TILE_GREEN].x = 0;
+	tile_clips[TILE_GREEN].y = 80;
+	tile_clips[TILE_GREEN].w = TILE_WIDTH;
+	tile_clips[TILE_GREEN].h = TILE_HEIGHT;
 
-		tile_clips[TILE_BLUE].x = 0;
-		tile_clips[TILE_BLUE].y = 160;
-		tile_clips[TILE_BLUE].w = TILE_WIDTH;
-		tile_clips[TILE_BLUE].h = TILE_HEIGHT;
+	tile_clips[TILE_BLUE].x = 0;
+	tile_clips[TILE_BLUE].y = 160;
+	tile_clips[TILE_BLUE].w = TILE_WIDTH;
+	tile_clips[TILE_BLUE].h = TILE_HEIGHT;
 
-		tile_clips[TILE_TOPLEFT].x = 80;
-		tile_clips[TILE_TOPLEFT].y = 0;
-		tile_clips[TILE_TOPLEFT].w = TILE_WIDTH;
-		tile_clips[TILE_TOPLEFT].h = TILE_HEIGHT;
+	tile_clips[TILE_TOPLEFT].x = 80;
+	tile_clips[TILE_TOPLEFT].y = 0;
+	tile_clips[TILE_TOPLEFT].w = TILE_WIDTH;
+	tile_clips[TILE_TOPLEFT].h = TILE_HEIGHT;
 
-		tile_clips[TILE_LEFT].x = 80;
-		tile_clips[TILE_LEFT].y = 80;
-		tile_clips[TILE_LEFT].w = TILE_WIDTH;
-		tile_clips[TILE_LEFT].h = TILE_HEIGHT;
+	tile_clips[TILE_LEFT].x = 80;
+	tile_clips[TILE_LEFT].y = 80;
+	tile_clips[TILE_LEFT].w = TILE_WIDTH;
+	tile_clips[TILE_LEFT].h = TILE_HEIGHT;
 
-		tile_clips[TILE_BOTLEFT].x = 80;
-		tile_clips[TILE_BOTLEFT].y = 160;
-		tile_clips[TILE_BOTLEFT].w = TILE_WIDTH;
-		tile_clips[TILE_BOTLEFT].h = TILE_HEIGHT;
+	tile_clips[TILE_BOTLEFT].x = 80;
+	tile_clips[TILE_BOTLEFT].y = 160;
+	tile_clips[TILE_BOTLEFT].w = TILE_WIDTH;
+	tile_clips[TILE_BOTLEFT].h = TILE_HEIGHT;
 
-		tile_clips[TILE_TOP].x = 160;
-		tile_clips[TILE_TOP].y = 0;
-		tile_clips[TILE_TOP].w = TILE_WIDTH;
-		tile_clips[TILE_TOP].h = TILE_HEIGHT;
+	tile_clips[TILE_TOP].x = 160;
+	tile_clips[TILE_TOP].y = 0;
+	tile_clips[TILE_TOP].w = TILE_WIDTH;
+	tile_clips[TILE_TOP].h = TILE_HEIGHT;
 
-		tile_clips[TILE_MID].x = 160;
-		tile_clips[TILE_MID].y = 80;
-		tile_clips[TILE_MID].w = TILE_WIDTH;
-		tile_clips[TILE_MID].h = TILE_HEIGHT;
+	tile_clips[TILE_MID].x = 160;
+	tile_clips[TILE_MID].y = 80;
+	tile_clips[TILE_MID].w = TILE_WIDTH;
+	tile_clips[TILE_MID].h = TILE_HEIGHT;
 
-		tile_clips[TILE_BOT].x = 160;
-		tile_clips[TILE_BOT].y = 160;
-		tile_clips[TILE_BOT].w = TILE_WIDTH;
-		tile_clips[TILE_BOT].h = TILE_HEIGHT;
+	tile_clips[TILE_BOT].x = 160;
+	tile_clips[TILE_BOT].y = 160;
+	tile_clips[TILE_BOT].w = TILE_WIDTH;
+	tile_clips[TILE_BOT].h = TILE_HEIGHT;
 
-		tile_clips[TILE_TOPRIGHT].x = 240;
-		tile_clips[TILE_TOPRIGHT].y = 0;
-		tile_clips[TILE_TOPRIGHT].w = TILE_WIDTH;
-		tile_clips[TILE_TOPRIGHT].h = TILE_HEIGHT;
+	tile_clips[TILE_TOPRIGHT].x = 240;
+	tile_clips[TILE_TOPRIGHT].y = 0;
+	tile_clips[TILE_TOPRIGHT].w = TILE_WIDTH;
+	tile_clips[TILE_TOPRIGHT].h = TILE_HEIGHT;
 
-		tile_clips[TILE_RIGHT].x = 240;
-		tile_clips[TILE_RIGHT].y = 80;
-		tile_clips[TILE_RIGHT].w = TILE_WIDTH;
-		tile_clips[TILE_RIGHT].h = TILE_HEIGHT;
+	tile_clips[TILE_RIGHT].x = 240;
+	tile_clips[TILE_RIGHT].y = 80;
+	tile_clips[TILE_RIGHT].w = TILE_WIDTH;
+	tile_clips[TILE_RIGHT].h = TILE_HEIGHT;
 
-		tile_clips[TILE_BOTRIGHT].x = 240;
-		tile_clips[TILE_BOTRIGHT].y = 160;
-		tile_clips[TILE_BOTRIGHT].w = TILE_WIDTH;
-		tile_clips[TILE_BOTRIGHT].h = TILE_HEIGHT;
-	}
+	tile_clips[TILE_BOTRIGHT].x = 240;
+	tile_clips[TILE_BOTRIGHT].y = 160;
+	tile_clips[TILE_BOTRIGHT].w = TILE_WIDTH;
+	tile_clips[TILE_BOTRIGHT].h = TILE_HEIGHT;
+
+	fclose(tilemap);
 }
 
 void tilemap_render_tile()

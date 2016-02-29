@@ -3,17 +3,6 @@
 static Sprite *sprite_list = NULL;
 const int SPRITE_MAX = 1000;
 int sprite_num;
-//extern SDL_Renderer *graphics_renderer;
-
-struct
-{
-	Uint32 state;
-	Uint32 shown;
-	Uint32 frame;
-	Uint16 x, y;
-} Mouse;
-
-Sprite *sprite_mouse;
 
 void sprite_initialize_system()
 {
@@ -32,7 +21,8 @@ void sprite_initialize_system()
 void sprite_close_system()
 {
 	int i;
-    if (!sprite_list)
+    
+	if (!sprite_list)
     {
         return;
     }
@@ -88,6 +78,7 @@ Sprite *sprite_load(char *filename, int frameW, int frameH)
 		if(!sprite_list[i].refCount)
 			break;
 	}
+
 	temp = IMG_Load(filename);
 	if(!temp)
 	{
@@ -131,43 +122,23 @@ void sprite_free(Sprite **sprite)
 	*sprite = NULL;
 }
 
-void sprite_draw(Sprite *sprite, int frame, int frameW, int frameH)
+void sprite_draw(Sprite *sprite, int frame, int drawX, int drawY)
 {
 	SDL_Rect src, dest;
 	if ((!sprite) || (!graphics_renderer))
+	{
 		return;
+	}
+
 	src.x = frame % sprite->fpl * sprite->frameSize.x;
 	src.y = frame / sprite->fpl * sprite->frameSize.y;
 	src.w = sprite->frameSize.x;
 	src.h = sprite->frameSize.y;
-	dest.x = frameW;
-	dest.y = frameH;
+
+	dest.x = drawX;
+	dest.y = drawY;
 	dest.w = sprite->frameSize.x;
 	dest.h = sprite->frameSize.y;
+
 	SDL_RenderCopy(graphics_renderer, sprite->image, &src, &dest);  
-}
-
-void sprite_initialize_mouse()
-{
-	sprite_mouse = sprite_load("images/mouse.png", 16, 16);
-	if(!sprite_mouse)
-	{
-		slog("Error: could not initialize mouse");
-	}
-	Mouse.state = 0;
-	Mouse.shown = 0;
-	Mouse.frame = 0;
-}
-
-void sprite_draw_mouse()
-{
-	int mx, my;
-	SDL_GetMouseState(&mx, &my);
-	if(sprite_mouse)
-	{
-		sprite_draw(sprite_mouse, Mouse.frame, mx, my);
-	}
-	Mouse.frame = (Mouse.frame + 1) % 16;
-	Mouse.x = mx;
-	Mouse.y = my;
 }

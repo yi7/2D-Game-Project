@@ -2,16 +2,17 @@
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 480;
+const int HUD_WIDTH = 160;
+const int HUD_HEIGHT = SCREEN_HEIGHT;
 
 SDL_Window *graphics_window = NULL;
 SDL_Surface *graphics_surface = NULL;
 SDL_Renderer *graphics_renderer = NULL;
 SDL_Texture *graphics_texture = NULL;
 
-static Uint32 graphics_frame_delay = 30;
+static Uint32 graphics_f_delay = 30;
 static Uint32 graphics_now = 0;
 static Uint32 graphics_then = 0;
-static Uint8 graphics_print_fps = 1;
 static float graphics_fps = 0; 
 
 void graphics_initialize_system(char *windowName, int renderWidth, int renderHeight, int fullscreen)
@@ -101,21 +102,22 @@ void graphics_close_system()
 	SDL_Surface *graphics_surface = NULL;
 }
 
-void graphics_delay_frame()
+void graphics_frame_delay()
 {
     Uint32 diff;
     graphics_then = graphics_now;
     graphics_now = SDL_GetTicks();
     diff = (graphics_now - graphics_then);
-    if (diff < graphics_frame_delay)
+    if (diff < graphics_f_delay)
     {
-        SDL_Delay(graphics_frame_delay - diff);
+        SDL_Delay(graphics_f_delay - diff);
     }
     graphics_fps = 1000.0 / MAX(SDL_GetTicks() - graphics_then, 0.001);
+	//slog("%f", graphics_fps);
 }
 
 void graphics_next_frame()
 {
 	SDL_RenderPresent(graphics_renderer);
-	graphics_delay_frame();
+	graphics_frame_delay();
 }

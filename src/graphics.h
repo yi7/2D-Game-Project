@@ -12,6 +12,8 @@
 
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
+extern const int HUD_WIDTH;
+extern const int HUD_HEIGHT;
 
 extern SDL_Window *graphics_window;
 extern SDL_Surface *graphics_surface;

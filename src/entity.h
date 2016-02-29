@@ -4,6 +4,7 @@
 #include "string.h"
 #include "stdlib.h"
 
+#include "camera.h"
 #include "graphics.h"
 #include "simple_logger.h"
 #include "sprite.h"
@@ -16,11 +17,15 @@ typedef struct Entity_S
 {
 	int inuse; /**<flag for tracking resource*/
 	Vect2d position;
-	Vect2d velocity;
+	Vect2d frameSize;
+	//Vect2d velocity;
+	int velocity;
+	int direction;
 	Sprite *sprite;
+	int cameraEnt; /**<true if the entity is relative to the camera*/
 	int frame;
 	float health, maxhealth;
-	void (*draw)(struct Entity_S *self, SDL_Renderer *renderer);
+	void (*draw)(struct Entity_S *self);
 	int nextThink; /**<time index for next think*/
 	int thinkRate; /**<how often to run think*/
 	void (*think)(struct Entity_S *self); /**<think function for entity*/
@@ -31,7 +36,6 @@ typedef struct Entity_S
 
 /**
  * @brief initializes entity system and queues up cleanup on exit
- * @param maxEntities how many entities the system should support. Should not be zero
  */
 void entity_initialize_system();
 
@@ -43,14 +47,14 @@ void entity_close_system();
  */
 Entity *entity_new();
 
-
 void entity_free(Entity **entity);
+void entity_draw(Entity *entity, int drawX, int drawY);
+int entity_intersect(Entity *a, Entity *b);
 
 void entity_think_all();
-void entity_update_all();
 void entity_draw_all();
+void entity_update_all();
 
-bool entity_draw(Entity *entity, int frame, int frameW, int frameH);
 
 /*int entity_intersect(Entity *a, Entity *b);
 Rect rect(int a, int b, int c, int d);*/
