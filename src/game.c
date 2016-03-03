@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 		timer++;
 
 		tilemap_render_tile();
-		//mice_draw();
+		mouse_draw_self();
 		entity_draw_all();
 
 		graphics_next_frame();
@@ -71,6 +71,11 @@ int main(int argc, char *argv[])
 			if(e.type == SDL_QUIT)
 			{
 				done = 1;
+			}
+
+			if(e.type == SDL_MOUSEBUTTONDOWN)
+			{
+				tilemap_place_tile();
 			}
 		}
 

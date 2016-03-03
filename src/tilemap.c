@@ -4,9 +4,6 @@ const int TILE_MAX		= 240; //20x12
 const int TILE_WIDTH	= 40;
 const int TILE_HEIGHT	= 40;
 
-const int TILE_MAP_WIDTH = SCREEN_WIDTH - 160;
-const int TILE_MAP_HEIGHT = SCREEN_HEIGHT;
-
 const int TILE_MAX_SPRITES = 12;
 const int TILE_RED		= 0;
 const int TILE_GREEN	= 1;
@@ -21,7 +18,11 @@ const int TILE_TOPRIGHT = 9;
 const int TILE_RIGHT	= 10;
 const int TILE_BOTRIGHT = 11;
 
-static Tile *tile_list = NULL;
+int tilemap_width;
+int tilemap_height;
+int tilemap_tpl;
+
+Tile *tile_list = NULL;
 SDL_Texture *tilemap_tile = NULL;
 SDL_Rect tile_clips[TILE_MAX_SPRITES];
 SDL_Rect tilemap_bound;
@@ -51,13 +52,14 @@ void tilemap_initialize_system()
 		tile_list[i].tile_box = temp;
 	}
 
+	tilemap_load_tiles("images/tiles.png");
+
+	tilemap_load_map("images/level.map");
 	tilemap_bound.x = 0;
 	tilemap_bound.y = 0;
-	tilemap_bound.w = TILE_MAP_WIDTH;
-	tilemap_bound.h = TILE_MAP_HEIGHT;
+	tilemap_bound.w = tilemap_width;
+	tilemap_bound.h = tilemap_height;
 
-	tilemap_load_tile("images/tiles.png");
-	tilemap_set_tile();
 	tilemap_render_tile();
 
 	atexit(tilemap_close_system);
@@ -79,7 +81,7 @@ void tilemap_free_tile(Tile *tile)
 	tile = NULL;
 }
 
-void tilemap_load_tile(char *filename)
+void tilemap_load_tiles(char *filename)
 {
 	SDL_Surface *temp = IMG_Load(filename);
 	if(!temp)
@@ -98,15 +100,57 @@ void tilemap_load_tile(char *filename)
 	}
 }
 
-void tilemap_set_tile()
+void tilemap_load_attributes(FILE *fileptr)
+{
+	char buffer[255];
+	char width[4];
+	char height[4];
+	char tpl[4];
+
+	if(fscanf(fileptr, "%s", buffer))
+	{
+		if(strcmp(buffer, "width:") == 0)
+		{
+			fscanf(fileptr, "%s", width);
+			tilemap_width = atoi(width);
+		}
+	}
+	
+	if(fscanf(fileptr, "%s", buffer))
+	{
+		if(strcmp(buffer, "height:") == 0)
+		{
+			fscanf(fileptr, "%s", height);
+			tilemap_height = atoi(height);
+		}
+	}
+
+	if(fscanf(fileptr, "%s", buffer))
+	{
+		if(strcmp(buffer, "tpl:") == 0)
+		{
+			fscanf(fileptr, "%s", tpl);
+			tilemap_tpl = atoi(tpl);
+		}
+	}
+}
+
+void tilemap_load_map(char *filename)
 {
 	int i;
 	int x = 0, y = 0;
 	Tile *tile;
-	FILE *tilemap;
+	FILE *tilemap = NULL;
 	int tiletype;
+	
 
-	tilemap = fopen("images/level.map", "r");
+	tilemap = fopen(filename, "r");
+	if(!tilemap)
+	{
+		slog("Error: Cannot open map file: %s\n", filename);
+		return;
+	}
+	tilemap_load_attributes(tilemap);
 
 	for(i = 0; i < TILE_MAX; i++)
 	{
@@ -120,12 +164,14 @@ void tilemap_set_tile()
 		tile->tile_type = tiletype;
 
 		x += TILE_WIDTH;
-		if(x >= SCREEN_WIDTH)
+		if(x >= tilemap_width)
 		{
 			x = 0;
 			y += TILE_HEIGHT;
 		}
 	}
+
+	fclose(tilemap);
 
 	//clip the sprite sheet
 	tile_clips[TILE_RED].x = 0;
@@ -187,8 +233,6 @@ void tilemap_set_tile()
 	tile_clips[TILE_BOTRIGHT].y = 160;
 	tile_clips[TILE_BOTRIGHT].w = TILE_WIDTH;
 	tile_clips[TILE_BOTRIGHT].h = TILE_HEIGHT;
-
-	fclose(tilemap);
 }
 
 void tilemap_render_tile()
@@ -213,4 +257,22 @@ void tilemap_render_tile()
 
 		SDL_RenderCopy(graphics_renderer, tilemap_tile, &src, &dst);
 	}
+}
+
+void tilemap_place_tile()
+{
+	int x, y;
+	SDL_GetMouseState( &x, &y );
+	
+	int mapX = x / TILE_WIDTH;
+	int mapY = y / TILE_HEIGHT;
+	int tile_pos = tilemap_tpl * mapY + mapX;
+
+	Tile *tile = &tile_list[tile_pos];
+	tile->tile_type = TILE_MID;
+}
+
+int tilemap_tile_collide()
+{
+	return 0;
 }

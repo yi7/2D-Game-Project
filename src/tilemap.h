@@ -8,6 +8,7 @@
 #include "SDL_image.h"
 
 #include "graphics.h"
+#include "mouse.h"
 #include "simple_logger.h"
 #include "sprite.h"
 
@@ -22,9 +23,13 @@ typedef struct
 void tilemap_initialize_system();
 void tilemap_close_system();
 
-void tilemap_load_tile(char *filename);
-void tilemap_set_tile();
+void tilemap_load_tiles(char *filename);
+void tilemap_load_attributes(char *fileptr);
+void tilemap_load_map(char *filename);
 void tilemap_free_tile(Tile *tile);
 void tilemap_render_tile();
+void tilemap_place_tile();
+
+int tilemap_tile_collide();
 
 #endif
