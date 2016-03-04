@@ -1,7 +1,7 @@
 #include "graphics.h"
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 920;
+const int SCREEN_HEIGHT = 560;
 const int HUD_WIDTH = 160;
 const int HUD_HEIGHT = SCREEN_HEIGHT;
 
@@ -51,7 +51,7 @@ void graphics_initialize_system(char *windowName, int renderWidth, int renderHei
         return;
     }
 
-	SDL_SetRenderDrawColor(graphics_renderer, 0, 0, 0, 255);
+	SDL_SetRenderDrawColor(graphics_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(graphics_renderer);
     SDL_RenderPresent(graphics_renderer);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");

@@ -176,26 +176,4 @@ void entity_update_all()
 		}
 	}
 	return NULL;
-}
-
-int entity_intersect(Entity *a, Entity *b)
-{
-	SDL_Rect aB, bB;
-
-	if((!a) || (!b))
-	{
-		slog("ErrorL missing entity for check");
-		return 0;
-	}
-
-	aB = rect(
-		a->position.x + a->bounds.x,
-		a->position.y + a->bounds.y,
-		a->bounds.w,
-		a->bounds.h);
-	bB = rect(
-		b->position.x + b->bounds.x,
-		b->position.y + b->bounds.y,
-		b->bounds.w,
-		b->bounds.h);
 }*/

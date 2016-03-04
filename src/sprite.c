@@ -87,7 +87,7 @@ Sprite *sprite_load(char *filename, int frameW, int frameH)
 	}
 
 	/*sets a transparent color for blitting.*/
-	SDL_SetColorKey(temp, SDL_TRUE, SDL_MapRGB(temp->format, 255,255,255));
+	//SDL_SetColorKey(temp, SDL_TRUE, SDL_MapRGB(temp->format, 255,255,255));
 
 	sprite_list[i].image = SDL_CreateTextureFromSurface(graphics_renderer, temp);
 	SDL_FreeSurface(temp);

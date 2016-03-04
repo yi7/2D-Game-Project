@@ -49,16 +49,16 @@ int main(int argc, char *argv[])
 	done = 0;
 	do
 	{
-		if(timer % 100 == 0 && miceCount < 7) {
+		/*if(timer % 100 == 0 && miceCount < 7) {
 			miceCount++;
 			mice_initialize();
 			timer = 0;
 		}
-		timer++;
+		timer++;*/
 
 		tilemap_render_tile();
-		mouse_draw_self();
 		entity_draw_all();
+		mouse_draw_self();
 
 		graphics_next_frame();
 		SDL_PumpEvents();

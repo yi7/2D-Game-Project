@@ -1,6 +1,6 @@
 #include "tilemap.h"
 
-const int TILE_MAX		= 240; //20x12
+const int TILE_MAX		= 322; //20x12
 const int TILE_WIDTH	= 40;
 const int TILE_HEIGHT	= 40;
 
@@ -8,14 +8,14 @@ const int TILE_MAX_SPRITES = 12;
 const int TILE_RED		= 0;
 const int TILE_GREEN	= 1;
 const int TILE_BLUE		= 2;
-const int TILE_TOPLEFT	= 3;
-const int TILE_LEFT		= 4;
-const int TILE_BOTLEFT  = 5;
-const int TILE_TOP		= 6;
+const int TILE_UP		= 3;
+const int TILE_RIGHT	= 4;
+const int TILE_DOWN		= 5;
+const int TILE_LEFT		= 6;
 const int TILE_MID		= 7;
 const int TILE_BOT		= 8;
 const int TILE_TOPRIGHT = 9;
-const int TILE_RIGHT	= 10;
+const int TILE_MIDRIGHT	= 10;
 const int TILE_BOTRIGHT = 11;
 
 int tilemap_width;
@@ -28,6 +28,7 @@ SDL_Rect tile_clips[TILE_MAX_SPRITES];
 SDL_Rect tilemap_bound;
 
 Sprite *tilemap;
+Entity *test;
 
 void tilemap_initialize_system()
 {
@@ -109,7 +110,7 @@ void tilemap_load_attributes(FILE *fileptr)
 
 	if(fscanf(fileptr, "%s", buffer))
 	{
-		if(strcmp(buffer, "width:") == 0)
+		if(strcmp(buffer, "map_width:") == 0)
 		{
 			fscanf(fileptr, "%s", width);
 			tilemap_width = atoi(width);
@@ -118,7 +119,7 @@ void tilemap_load_attributes(FILE *fileptr)
 	
 	if(fscanf(fileptr, "%s", buffer))
 	{
-		if(strcmp(buffer, "height:") == 0)
+		if(strcmp(buffer, "map_height:") == 0)
 		{
 			fscanf(fileptr, "%s", height);
 			tilemap_height = atoi(height);
@@ -189,25 +190,25 @@ void tilemap_load_map(char *filename)
 	tile_clips[TILE_BLUE].w = TILE_WIDTH;
 	tile_clips[TILE_BLUE].h = TILE_HEIGHT;
 
-	tile_clips[TILE_TOPLEFT].x = 80;
-	tile_clips[TILE_TOPLEFT].y = 0;
-	tile_clips[TILE_TOPLEFT].w = TILE_WIDTH;
-	tile_clips[TILE_TOPLEFT].h = TILE_HEIGHT;
+	tile_clips[TILE_UP].x = 80;
+	tile_clips[TILE_UP].y = 0;
+	tile_clips[TILE_UP].w = TILE_WIDTH;
+	tile_clips[TILE_UP].h = TILE_HEIGHT;
 
-	tile_clips[TILE_LEFT].x = 80;
-	tile_clips[TILE_LEFT].y = 80;
+	tile_clips[TILE_RIGHT].x = 80;
+	tile_clips[TILE_RIGHT].y = 80;
+	tile_clips[TILE_RIGHT].w = TILE_WIDTH;
+	tile_clips[TILE_RIGHT].h = TILE_HEIGHT;
+
+	tile_clips[TILE_DOWN].x = 80;
+	tile_clips[TILE_DOWN].y = 160;
+	tile_clips[TILE_DOWN].w = TILE_WIDTH;
+	tile_clips[TILE_DOWN].h = TILE_HEIGHT;
+
+	tile_clips[TILE_LEFT].x = 160;
+	tile_clips[TILE_LEFT].y = 0;
 	tile_clips[TILE_LEFT].w = TILE_WIDTH;
 	tile_clips[TILE_LEFT].h = TILE_HEIGHT;
-
-	tile_clips[TILE_BOTLEFT].x = 80;
-	tile_clips[TILE_BOTLEFT].y = 160;
-	tile_clips[TILE_BOTLEFT].w = TILE_WIDTH;
-	tile_clips[TILE_BOTLEFT].h = TILE_HEIGHT;
-
-	tile_clips[TILE_TOP].x = 160;
-	tile_clips[TILE_TOP].y = 0;
-	tile_clips[TILE_TOP].w = TILE_WIDTH;
-	tile_clips[TILE_TOP].h = TILE_HEIGHT;
 
 	tile_clips[TILE_MID].x = 160;
 	tile_clips[TILE_MID].y = 80;
@@ -224,10 +225,10 @@ void tilemap_load_map(char *filename)
 	tile_clips[TILE_TOPRIGHT].w = TILE_WIDTH;
 	tile_clips[TILE_TOPRIGHT].h = TILE_HEIGHT;
 
-	tile_clips[TILE_RIGHT].x = 240;
-	tile_clips[TILE_RIGHT].y = 80;
-	tile_clips[TILE_RIGHT].w = TILE_WIDTH;
-	tile_clips[TILE_RIGHT].h = TILE_HEIGHT;
+	tile_clips[TILE_MIDRIGHT].x = 240;
+	tile_clips[TILE_MIDRIGHT].y = 80;
+	tile_clips[TILE_MIDRIGHT].w = TILE_WIDTH;
+	tile_clips[TILE_MIDRIGHT].h = TILE_HEIGHT;
 
 	tile_clips[TILE_BOTRIGHT].x = 240;
 	tile_clips[TILE_BOTRIGHT].y = 160;
@@ -264,15 +265,89 @@ void tilemap_place_tile()
 	int x, y;
 	SDL_GetMouseState( &x, &y );
 	
+	if(x > tilemap_width || y > tilemap_height)
+	{
+		slog("Not a valid tile");
+		return;
+	}
+
 	int mapX = x / TILE_WIDTH;
 	int mapY = y / TILE_HEIGHT;
 	int tile_pos = tilemap_tpl * mapY + mapX;
 
+
 	Tile *tile = &tile_list[tile_pos];
-	tile->tile_type = TILE_MID;
+	int type = tile->tile_type;
+	switch(type)
+	{
+	case TILE_RED:
+		tile->tile_type = TILE_UP;
+		break;
+	case TILE_GREEN:
+		tile->tile_type = TILE_UP;
+		break;
+	case TILE_BLUE:
+		tile->tile_type = TILE_UP;
+		break;
+	case TILE_UP:
+		tile->tile_type = TILE_RIGHT;
+		break;
+	case TILE_RIGHT:
+		tile->tile_type = TILE_DOWN;
+		break;
+	case TILE_DOWN:
+		tile->tile_type = TILE_LEFT;
+		break;
+	case TILE_LEFT:
+		tile->tile_type = TILE_UP;
+		break;
+	}
 }
 
-int tilemap_tile_collide()
+void tilemap_entity_on_special_tile(Entity *entity)
 {
-	return 0;
+	int x = entity->position.x;
+	int y = entity->position.y;
+	
+	if((x % TILE_WIDTH) != 0 && (y % TILE_HEIGHT) != 0)
+	{
+		return;
+	}
+	
+	int mapX = x / TILE_WIDTH;
+	int mapY = y / TILE_HEIGHT;
+	int tile_pos = tilemap_tpl * mapY + mapX;
+	Tile *tile = &tile_list[tile_pos];
+
+	if(tile->tile_box.x != x || tile->tile_box.y != y)
+	{
+		return;
+	}
+
+	if(tile->tile_type == TILE_UP)
+	{
+		entity->direction = UP;
+	}
+	else if(tile->tile_type == TILE_RIGHT)
+	{
+		entity->direction = RIGHT;
+	}
+	else if(tile->tile_type == TILE_DOWN)
+	{
+		entity->direction = DOWN;
+	}
+	else if(tile->tile_type == TILE_LEFT)
+	{
+		entity->direction = LEFT;
+	}
+}
+
+int tilemap_entity_out_of_bounds(Entity *entity)
+{
+	if( entity->position.x >= 0 &&
+		entity->position.x + entity->frameSize.x <= tilemap_width &&
+		entity->position.y >= 0 &&
+		entity->position.y + entity->frameSize.y <= tilemap_height )
+		return 0;
+	return 1;
 }

@@ -10,6 +10,14 @@
 #include "sprite.h"
 #include "vector.h"
 
+enum Direction
+{
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
+};
+
 /**
  * @brief the core data structure for our entity system
  */
@@ -20,7 +28,7 @@ typedef struct Entity_S
 	Vect2d frameSize;
 	//Vect2d velocity;
 	int velocity;
-	int direction;
+	enum Direction direction;
 	Sprite *sprite;
 	int cameraEnt; /**<true if the entity is relative to the camera*/
 	int frame;
@@ -50,6 +58,7 @@ Entity *entity_new();
 void entity_free(Entity **entity);
 void entity_draw(Entity *entity, int drawX, int drawY);
 int entity_intersect(Entity *a, Entity *b);
+int entity_out_of_bounds(Entity *entity);
 
 void entity_think_all();
 void entity_draw_all();
