@@ -7,12 +7,15 @@ const int MICE_H = 40;
 const int MICE_FRAME_W = 40;
 const int MICE_FRAME_H = 40;
 
+const int animationRate = 7;
+const int animationLength = 8;
+
 Sprite *mice_sprite;
 
 void mice_initialize()
 {
 	Vect2d pos = {500, 500};
-	mice_sprite = sprite_load("images/HP_1.png", MICE_FRAME_W, MICE_FRAME_H);
+	mice_sprite = sprite_load("images/hover_mouse_sprite.png", MICE_FRAME_W, MICE_FRAME_H);
 	
 	mice = entity_new();
 	mice->sprite = mice_sprite;
@@ -30,7 +33,25 @@ void mice_initialize()
 
 void mice_draw(Entity *entity)
 {
-	entity_draw(entity, entity->position.x, entity->position.y);
+	switch(entity->direction)
+	{
+	case UP:
+		entity->frame = (entity->frame + 1) % 8;
+		entity_draw(entity, entity->position.x, entity->position.y);
+		break;
+	case RIGHT:
+		entity->frame = (entity->frame + 1) % 8 + 16;
+		entity_draw(entity, entity->position.x, entity->position.y);
+		break;
+	case DOWN:
+		entity->frame = (entity->frame + 1) % 8 + 32;
+		entity_draw(entity, entity->position.x, entity->position.y);
+		break;
+	case LEFT:
+		entity->frame = (entity->frame + 1) % 8 + 48;
+		entity_draw(entity, entity->position.x, entity->position.y);
+		break;
+	}
 }
 
 void mice_think(Entity *entity)

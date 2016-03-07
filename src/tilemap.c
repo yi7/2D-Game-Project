@@ -27,9 +27,6 @@ SDL_Texture *tilemap_tile = NULL;
 SDL_Rect tile_clips[TILE_MAX_SPRITES];
 SDL_Rect tilemap_bound;
 
-Sprite *tilemap;
-Entity *test;
-
 void tilemap_initialize_system()
 {
 	int i;
@@ -44,7 +41,6 @@ void tilemap_initialize_system()
 		slog("Error: failed to allocate tilemap system.");
         return;
 	}
-	
 	memset(tile_list, 0, sizeof(Tile) * TILE_MAX);
 
 	SDL_Rect temp = {0, 0, 0, 0};
@@ -104,16 +100,14 @@ void tilemap_load_tiles(char *filename)
 void tilemap_load_attributes(FILE *fileptr)
 {
 	char buffer[255];
-	char width[4];
-	char height[4];
-	char tpl[4];
+	char attribute[4];
 
 	if(fscanf(fileptr, "%s", buffer))
 	{
 		if(strcmp(buffer, "map_width:") == 0)
 		{
-			fscanf(fileptr, "%s", width);
-			tilemap_width = atoi(width);
+			fscanf(fileptr, "%s", attribute);
+			tilemap_width = atoi(attribute);
 		}
 	}
 	
@@ -121,8 +115,8 @@ void tilemap_load_attributes(FILE *fileptr)
 	{
 		if(strcmp(buffer, "map_height:") == 0)
 		{
-			fscanf(fileptr, "%s", height);
-			tilemap_height = atoi(height);
+			fscanf(fileptr, "%s", attribute);
+			tilemap_height = atoi(attribute);
 		}
 	}
 
@@ -130,8 +124,8 @@ void tilemap_load_attributes(FILE *fileptr)
 	{
 		if(strcmp(buffer, "tpl:") == 0)
 		{
-			fscanf(fileptr, "%s", tpl);
-			tilemap_tpl = atoi(tpl);
+			fscanf(fileptr, "%s", attribute);
+			tilemap_tpl = atoi(attribute);
 		}
 	}
 }
@@ -141,17 +135,17 @@ void tilemap_load_map(char *filename)
 	int i;
 	int x = 0, y = 0;
 	Tile *tile;
-	FILE *tilemap = NULL;
+	FILE *fileptr = NULL;
 	int tiletype;
 	
 
-	tilemap = fopen(filename, "r");
-	if(!tilemap)
+	fileptr = fopen(filename, "r");
+	if(!fileptr)
 	{
 		slog("Error: Cannot open map file: %s\n", filename);
 		return;
 	}
-	tilemap_load_attributes(tilemap);
+	tilemap_load_attributes(fileptr);
 
 	for(i = 0; i < TILE_MAX; i++)
 	{
@@ -161,7 +155,7 @@ void tilemap_load_map(char *filename)
 		tile->tile_box.w = TILE_WIDTH;
 		tile->tile_box.h = TILE_HEIGHT;
 
-		fscanf(tilemap, "%d", &tiletype);
+		fscanf(fileptr, "%d", &tiletype);
 		tile->tile_type = tiletype;
 
 		x += TILE_WIDTH;
@@ -172,7 +166,7 @@ void tilemap_load_map(char *filename)
 		}
 	}
 
-	fclose(tilemap);
+	fclose(fileptr);
 
 	//clip the sprite sheet
 	tile_clips[TILE_RED].x = 0;
@@ -324,21 +318,21 @@ void tilemap_entity_on_special_tile(Entity *entity)
 		return;
 	}
 
-	if(tile->tile_type == TILE_UP)
+	int type = tile->tile_type;
+	switch(type)
 	{
+	case TILE_UP:
 		entity->direction = UP;
-	}
-	else if(tile->tile_type == TILE_RIGHT)
-	{
+		break;
+	case TILE_RIGHT:
 		entity->direction = RIGHT;
-	}
-	else if(tile->tile_type == TILE_DOWN)
-	{
+		break;
+	case TILE_DOWN:
 		entity->direction = DOWN;
-	}
-	else if(tile->tile_type == TILE_LEFT)
-	{
+		break;
+	case TILE_LEFT:
 		entity->direction = LEFT;
+		break;
 	}
 }
 

@@ -9,14 +9,6 @@
 #include "tilemap.h"
 #include "vector.h"
 
-/*typedef enum
-{
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
-} miceStates;*/
-
 void mice_initialize();
 void mice_draw(Entity *entity);
 void mice_think(Entity *entity);
