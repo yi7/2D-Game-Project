@@ -1,4 +1,4 @@
-﻿Build started 2/5/2016 12:15:38 PM.
+﻿Build started 3/6/2016 11:13:25 PM.
      1>Project "D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\2dGameSample\win32\gametest.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\gametest.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -14,4 +14,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.19
+Time Elapsed 00:00:00.21
