@@ -46,6 +46,7 @@ void tilemap_initialize_system()
 	SDL_Rect temp = {0, 0, 0, 0};
 	for(i = 0; i < TILE_MAX; i++)
 	{
+		tile_list[i].tile_buffer = NULL;
 		tile_list[i].tile_box = temp;
 	}
 
@@ -242,7 +243,10 @@ void tilemap_render_tile()
 		}
 
 		SDL_Rect src;
-		src = tile_clips[tile_list[i].tile_type];
+		if(tile_list[i].tile_buffer != NULL)
+			src = tile_clips[tile_list[i].tile_buffer];
+		else
+			src = tile_clips[tile_list[i].tile_type];
 
 		SDL_Rect dst;
 		dst.x = tile->tile_box.x;
@@ -271,31 +275,51 @@ void tilemap_place_tile()
 
 
 	Tile *tile = &tile_list[tile_pos];
-	int type = tile->tile_type;
+	int type = tile->tile_buffer;
 	switch(type)
 	{
 	case TILE_RED:
-		tile->tile_type = TILE_UP;
+		tile->tile_buffer = TILE_UP;
 		break;
 	case TILE_GREEN:
-		tile->tile_type = TILE_UP;
+		tile->tile_buffer = TILE_UP;
 		break;
 	case TILE_BLUE:
-		tile->tile_type = TILE_UP;
+		tile->tile_buffer = TILE_UP;
 		break;
 	case TILE_UP:
-		tile->tile_type = TILE_RIGHT;
+		tile->tile_buffer = TILE_RIGHT;
 		break;
 	case TILE_RIGHT:
-		tile->tile_type = TILE_DOWN;
+		tile->tile_buffer = TILE_DOWN;
 		break;
 	case TILE_DOWN:
-		tile->tile_type = TILE_LEFT;
+		tile->tile_buffer = TILE_LEFT;
 		break;
 	case TILE_LEFT:
-		tile->tile_type = TILE_UP;
+		tile->tile_buffer = TILE_UP;
 		break;
 	}
+}
+
+void tilemap_remove_tile()
+{
+	int x, y;
+	SDL_GetMouseState( &x, &y );
+	
+	if(x > tilemap_width || y > tilemap_height)
+	{
+		slog("Not a valid tile");
+		return;
+	}
+
+	int mapX = x / TILE_WIDTH;
+	int mapY = y / TILE_HEIGHT;
+	int tile_pos = tilemap_tpl * mapY + mapX;
+
+
+	Tile *tile = &tile_list[tile_pos];
+	tile->tile_buffer = NULL;
 }
 
 void tilemap_entity_on_special_tile(Entity *entity)
@@ -318,20 +342,20 @@ void tilemap_entity_on_special_tile(Entity *entity)
 		return;
 	}
 
-	int type = tile->tile_type;
+	int type = tile->tile_buffer;
 	switch(type)
 	{
 	case TILE_UP:
-		entity->direction = UP;
+		entity->state = UP;
 		break;
 	case TILE_RIGHT:
-		entity->direction = RIGHT;
+		entity->state = RIGHT;
 		break;
 	case TILE_DOWN:
-		entity->direction = DOWN;
+		entity->state = DOWN;
 		break;
 	case TILE_LEFT:
-		entity->direction = LEFT;
+		entity->state = LEFT;
 		break;
 	}
 }

@@ -5,6 +5,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 
+#include "cat.h"
 #include "entity.h"
 #include "graphics.h"
 #include "mice.h"
@@ -28,6 +29,7 @@ int main(int argc, char *argv[])
 	char imagepath[512];
 
 	game_initialize_system();
+	SDL_ShowCursor(SDL_DISABLE);
 	/*if(game_get_image_path_from_file(imagepath, "config.ini"))
 	{
 		temp = IMG_Load(imagepath);
@@ -43,18 +45,13 @@ int main(int argc, char *argv[])
 	SDL_UpdateWindowSurface(graphics_window);*/
 
 	mice_initialize();
+	cat_initialize();
 
 	int timer = 0, miceCount = 0;
 	SDL_Event e;
 	done = 0;
 	do
 	{
-		/*if(timer % 100 == 0 && miceCount < 7) {
-			miceCount++;
-			mice_initialize();
-			timer = 0;
-		}
-		timer++;*/
 
 		tilemap_render_tile();
 		entity_draw_all();
@@ -63,7 +60,7 @@ int main(int argc, char *argv[])
 		graphics_next_frame();
 		SDL_PumpEvents();
 
-		//mice_move();
+		//entity_intersect_all();
 		entity_think_all();
 
 		while(SDL_PollEvent(&e) != 0)
@@ -73,9 +70,36 @@ int main(int argc, char *argv[])
 				done = 1;
 			}
 
-			if(e.type == SDL_MOUSEBUTTONDOWN)
+			/*if(e.type == SDL_MOUSEBUTTONDOWN)
 			{
 				tilemap_place_tile();
+			}*/
+			/*if(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT))
+			{
+				tilemap_place_tile();
+			}*/
+
+			
+			bool leftclick = false ; //is set to false every frame
+			bool rightclick = false;
+			if(e.type == SDL_MOUSEBUTTONDOWN)
+			{
+				if(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT))
+				{
+					leftclick = true;
+				}
+				else if(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT))
+				{
+					rightclick = true;
+				}
+			}
+			if(leftclick == true)
+			{
+				tilemap_place_tile();
+			}
+			else if(rightclick == true)
+			{
+				tilemap_remove_tile();
 			}
 		}
 

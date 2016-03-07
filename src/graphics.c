@@ -112,7 +112,7 @@ void graphics_frame_delay()
     {
         SDL_Delay(graphics_f_delay - diff);
     }
-    graphics_fps = 1000.0 / MAX(SDL_GetTicks() - graphics_then, 0.001);
+    //graphics_fps = 1000.0 / MAX(SDL_GetTicks() - graphics_then, 0.001);
 	//slog("%f", graphics_fps);
 }
 

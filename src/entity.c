@@ -96,6 +96,11 @@ int entity_intersect(Entity *a, Entity *b)
 	return rect_intersect(aBox, bBox);
 }
 
+void entity_think(Entity *entity)
+{
+
+}
+
 void entity_think_all()
 {
 	int i;
@@ -155,25 +160,26 @@ void entity_update_all()
 	}
 }
 
-/*Entity *entity_intersect_all(Entity *a)
+void entity_intersect_all(Entity *self)
 {
 	int i;
-	if(!a) return NULL;
+	if(!self) return;
 	for(i = 0; i < ENTITY_MAX; i++)
 	{
 		if(!entity_list[i].inuse)
 		{
 			continue;
 		}
-		if(a == &entity_list[i])
+		if(self == &entity_list[i])
 		{
 			continue;
 			//don't clip self
 		}
-		if(entity_intersect(a, &entity_list[i]))
+		if(entity_intersect(self, &entity_list[i]))
 		{
-			return &entity_list[i];
+			slog("test");
+			//return &entity_list[i];
 		}
 	}
-	return NULL;
-}*/
+	return;
+}

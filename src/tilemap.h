@@ -21,6 +21,7 @@ typedef struct
 {
 	SDL_Rect tile_box; /**<the attributes of the tile*/
 	int tile_type; /**<the tile type*/
+	int tile_buffer;
 } Tile;
 
 void tilemap_initialize_system();
@@ -32,6 +33,7 @@ void tilemap_load_map(char *filename);
 void tilemap_free_tile(Tile *tile);
 void tilemap_render_tile();
 void tilemap_place_tile();
+void tilemap_remove_tile();
 void tilemap_entity_on_special_tile(Entity *entity);
 
 int tilemap_entity_out_of_bounds(Entity *entity);

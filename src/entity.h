@@ -10,7 +10,7 @@
 #include "sprite.h"
 #include "vector.h"
 
-enum Direction
+enum State
 {
 	UP,
 	DOWN,
@@ -26,13 +26,11 @@ typedef struct Entity_S
 	int inuse; /**<flag for tracking resource*/
 	Vect2d position;
 	Vect2d frameSize;
-	//Vect2d velocity;
 	int velocity;
-	enum Direction direction;
+	enum State state;
 	Sprite *sprite;
 	int cameraEnt; /**<true if the entity is relative to the camera*/
 	int frame;
-	float health, maxhealth;
 	void (*draw)(struct Entity_S *self);
 	int nextThink; /**<time index for next think*/
 	int thinkRate; /**<how often to run think*/
@@ -58,12 +56,12 @@ Entity *entity_new();
 void entity_free(Entity **entity);
 void entity_draw(Entity *entity, int drawX, int drawY);
 int entity_intersect(Entity *a, Entity *b);
-int entity_out_of_bounds(Entity *entity);
+void entity_think(Entity *entity);
 
 void entity_think_all();
 void entity_draw_all();
 void entity_update_all();
-
+void entity_intersect_all(Entity *self);
 
 /*int entity_intersect(Entity *a, Entity *b);
 Rect rect(int a, int b, int c, int d);*/

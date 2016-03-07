@@ -1,15 +1,11 @@
 #include "mice.h"
 
-Entity *mice = NULL;
-
 const int MICE_W = 40;
 const int MICE_H = 40;
 const int MICE_FRAME_W = 40;
 const int MICE_FRAME_H = 40;
 
-const int animationRate = 7;
-const int animationLength = 8;
-
+Entity *mice = NULL;
 Sprite *mice_sprite;
 
 void mice_initialize()
@@ -25,7 +21,7 @@ void mice_initialize()
 	mice->position.x = 400;
 	mice->position.y = 0;
 	mice->velocity = 2;
-	mice->direction = UP;
+	mice->state = UP;
 
 	mice->think = mice_think;
 	mice->draw = mice_draw;
@@ -33,7 +29,7 @@ void mice_initialize()
 
 void mice_draw(Entity *entity)
 {
-	switch(entity->direction)
+	switch(entity->state)
 	{
 	case UP:
 		entity->frame = (entity->frame + 1) % 8;
@@ -56,19 +52,19 @@ void mice_draw(Entity *entity)
 
 void mice_think(Entity *entity)
 {
-	if(entity->direction == UP)
+	if(entity->state == UP)
 	{
 		entity->position.y -= entity->velocity;
 	}
-	else if(entity->direction == DOWN)
+	else if(entity->state == DOWN)
 	{
 		entity->position.y += entity->velocity;
 	}
-	else if(entity->direction == LEFT)
+	else if(entity->state == LEFT)
 	{
 		entity->position.x -= entity->velocity;
 	}
-	else if(entity->direction == RIGHT)
+	else if(entity->state == RIGHT)
 	{
 		entity->position.x += entity->velocity;
 	}
@@ -76,25 +72,25 @@ void mice_think(Entity *entity)
 
 	if(tilemap_entity_out_of_bounds(entity))
 	{
-		if(entity->direction == UP)
+		if(entity->state == UP)
 		{
 			entity->position.y += entity->velocity;
-			entity->direction = RIGHT;
+			entity->state = RIGHT;
 		}
-		else if(entity->direction == DOWN)
+		else if(entity->state == DOWN)
 		{
 			entity->position.y -= entity->velocity;
-			entity->direction = LEFT;
+			entity->state = LEFT;
 		}
-		else if(entity->direction == LEFT)
+		else if(entity->state == LEFT)
 		{
 			entity->position.x += entity->velocity;
-			entity->direction = UP;
+			entity->state = UP;
 		}
-		else if(entity->direction == RIGHT)
+		else if(entity->state == RIGHT)
 		{
 			entity->position.x -= entity->velocity;
-			entity->direction = DOWN;
+			entity->state = DOWN;
 		}
 	}
 
