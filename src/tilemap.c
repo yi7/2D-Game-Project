@@ -280,6 +280,12 @@ void tilemap_place_tile()
 
 	Tile *tile = &tile_list[tile_pos];
 	int type = tile->tile_buffer;
+	
+	if(tile->tile_type == TILE_HOLE || tile->tile_type == TILE_BLOCK)
+	{
+		return;
+	}
+
 	switch(type)
 	{
 	case TILE_RED:
