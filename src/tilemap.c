@@ -13,7 +13,7 @@ const int TILE_RIGHT	= 4;
 const int TILE_DOWN		= 5;
 const int TILE_LEFT		= 6;
 const int TILE_HOLE		= 7;
-const int TILE_BOT		= 8;
+const int TILE_BLOCK	= 8;
 const int TILE_TOPRIGHT = 9;
 const int TILE_MIDRIGHT	= 10;
 const int TILE_BOTRIGHT = 11;
@@ -210,10 +210,10 @@ void tilemap_load_map(char *filename)
 	tile_clips[TILE_HOLE].w = TILE_WIDTH;
 	tile_clips[TILE_HOLE].h = TILE_HEIGHT;
 
-	tile_clips[TILE_BOT].x = 160;
-	tile_clips[TILE_BOT].y = 160;
-	tile_clips[TILE_BOT].w = TILE_WIDTH;
-	tile_clips[TILE_BOT].h = TILE_HEIGHT;
+	tile_clips[TILE_BLOCK].x = 160;
+	tile_clips[TILE_BLOCK].y = 160;
+	tile_clips[TILE_BLOCK].w = TILE_WIDTH;
+	tile_clips[TILE_BLOCK].h = TILE_HEIGHT;
 
 	tile_clips[TILE_TOPRIGHT].x = 240;
 	tile_clips[TILE_TOPRIGHT].y = 0;
@@ -326,7 +326,7 @@ void tilemap_remove_tile()
 	tile->tile_buffer = NULL;
 }
 
-int tilemap_get_front_tile(Entity *entity) {
+void tilemap_check_front_tile(Entity *entity) {
 	int x = entity->position.x;
 	int y = entity->position.y;
 
@@ -334,35 +334,59 @@ int tilemap_get_front_tile(Entity *entity) {
 	int mapY = y / TILE_HEIGHT;
 	int tile_pos = tilemap_tpl * mapY + mapX;
 
+	int tile_front = -1;
+	Tile *tile_check;
+
 	switch(entity->state)
 	{
 	case UP:
 		if(tile_pos - tilemap_tpl > 0)
 		{
-			return tile_pos - tilemap_tpl;
+			tile_front = tile_pos - tilemap_tpl;
 		}
 		break;
 	case RIGHT:
 		if(tile_pos + 1 % tilemap_tpl != 0 && tile_pos + 1 < TILE_MAX)
 		{
-			return tile_pos + 1;
+			tile_front = tile_pos + 1;
 		}
 		break;
 	case DOWN:
 		if(tile_pos + tilemap_tpl < TILE_MAX)
 		{
-			return tile_pos + tilemap_tpl;
+			tile_front = tile_pos + tilemap_tpl;
 		}
 		break;
 	case LEFT:
 		if(tile_pos % tilemap_tpl != 0 && tile_pos - 1 > 0)
 		{
-			return tile_pos - 1;
+			tile_front = tile_pos - 1;
 		}
 		break;
 	}
 
-	return -1;
+	if(tile_front != -1)
+	{
+		tile_check = &tile_list[tile_front];
+		if(tile_check->tile_type == TILE_BLOCK)
+		{
+			switch(entity->state)
+			{
+			case UP:
+				entity->state = RIGHT;
+				break;
+			case RIGHT:
+				entity->state = DOWN;
+				break;
+			case DOWN:
+				entity->state = LEFT;
+				break;
+			case LEFT:
+				entity->state = UP;
+				break;
+			}
+		}
+	}
 }
 
 void tilemap_entity_on_special_tile(Entity *entity)
@@ -394,18 +418,6 @@ void tilemap_entity_on_special_tile(Entity *entity)
 	{
 		type = tile->tile_type;
 	}
-	Tile *tile_test;
-	int test = tilemap_get_front_tile(entity);
-	if(test != -1)
-	{
-		tile_test = &tile_list[test];
-		if(tile_test->tile_type == TILE_HOLE)
-		{
-			entity->state = UP;
-			return;
-		}
-	}
-
 
 	switch(type)
 	{
@@ -425,6 +437,7 @@ void tilemap_entity_on_special_tile(Entity *entity)
 		entity->state = FAINT;
 		break;
 	}
+	tilemap_check_front_tile(entity);
 }
 
 int tilemap_entity_out_of_bounds(Entity *entity)
