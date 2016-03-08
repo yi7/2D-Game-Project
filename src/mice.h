@@ -10,6 +10,7 @@
 #include "vector.h"
 
 void mice_initialize();
+void mice_free(Entity *entity);
 void mice_draw(Entity *entity);
 void mice_think(Entity *entity);
 

@@ -20,11 +20,11 @@ void cat_initialize()
 	cat->position.x = 0;
 	cat->position.y = 0;
 	cat->velocity = 2;
-	cat->state = UP;
+	cat->state = LEFT;
 
 	cat->think = cat_think;
 	cat->draw = cat_draw;
-	cat->touch = cat_touch;
+	//cat->touch = cat_touch;
 }
 
 void cat_draw(Entity *entity)
@@ -77,14 +77,19 @@ void cat_think(Entity *entity)
 		}
 	}
 
+	cat_touch(entity);
 	tilemap_entity_on_special_tile(entity);
 }
 
-void cat_touch(Entity *self, Entity *other)
+void cat_touch(Entity *self)
 {
-	if( self->position.x == other->position.x &&
-		self->position.y == other->position.y )
+	Entity *other;
+	
+	other = entity_intersect_all(self);
+	if(!other)
 	{
-		entity_free(&other);
+		return;
 	}
+
+	other->state = FAINT;
 }

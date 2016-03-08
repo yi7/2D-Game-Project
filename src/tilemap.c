@@ -12,7 +12,7 @@ const int TILE_UP		= 3;
 const int TILE_RIGHT	= 4;
 const int TILE_DOWN		= 5;
 const int TILE_LEFT		= 6;
-const int TILE_MID		= 7;
+const int TILE_HOLE		= 7;
 const int TILE_BOT		= 8;
 const int TILE_TOPRIGHT = 9;
 const int TILE_MIDRIGHT	= 10;
@@ -205,10 +205,10 @@ void tilemap_load_map(char *filename)
 	tile_clips[TILE_LEFT].w = TILE_WIDTH;
 	tile_clips[TILE_LEFT].h = TILE_HEIGHT;
 
-	tile_clips[TILE_MID].x = 160;
-	tile_clips[TILE_MID].y = 80;
-	tile_clips[TILE_MID].w = TILE_WIDTH;
-	tile_clips[TILE_MID].h = TILE_HEIGHT;
+	tile_clips[TILE_HOLE].x = 160;
+	tile_clips[TILE_HOLE].y = 80;
+	tile_clips[TILE_HOLE].w = TILE_WIDTH;
+	tile_clips[TILE_HOLE].h = TILE_HEIGHT;
 
 	tile_clips[TILE_BOT].x = 160;
 	tile_clips[TILE_BOT].y = 160;
@@ -244,9 +244,13 @@ void tilemap_render_tile()
 
 		SDL_Rect src;
 		if(tile_list[i].tile_buffer != NULL)
+		{
 			src = tile_clips[tile_list[i].tile_buffer];
+		}
 		else
+		{
 			src = tile_clips[tile_list[i].tile_type];
+		}
 
 		SDL_Rect dst;
 		dst.x = tile->tile_box.x;
@@ -342,7 +346,16 @@ void tilemap_entity_on_special_tile(Entity *entity)
 		return;
 	}
 
-	int type = tile->tile_buffer;
+	int type;
+	if(tile->tile_buffer)
+	{
+		type = tile->tile_buffer;
+	}
+	else
+	{
+		type = tile->tile_type;
+	}
+
 	switch(type)
 	{
 	case TILE_UP:
@@ -356,6 +369,9 @@ void tilemap_entity_on_special_tile(Entity *entity)
 		break;
 	case TILE_LEFT:
 		entity->state = LEFT;
+		break;
+	case TILE_HOLE:
+		entity->state = FAINT;
 		break;
 	}
 }

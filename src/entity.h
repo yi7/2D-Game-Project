@@ -15,7 +15,8 @@ enum State
 	UP,
 	DOWN,
 	LEFT,
-	RIGHT
+	RIGHT,
+	FAINT
 };
 
 /**
@@ -61,7 +62,7 @@ void entity_think(Entity *entity);
 void entity_think_all();
 void entity_draw_all();
 void entity_update_all();
-void entity_intersect_all(Entity *self);
+Entity *entity_intersect_all(Entity *self);
 
 /*int entity_intersect(Entity *a, Entity *b);
 Rect rect(int a, int b, int c, int d);*/

@@ -10,6 +10,6 @@
 void cat_initialize();
 void cat_draw(Entity *entity);
 void cat_think(Entity *entity);
-void cat_touch(Entity *self, Entity *other);
+void cat_touch(Entity *self);
 
 #endif

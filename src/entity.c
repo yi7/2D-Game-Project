@@ -56,7 +56,7 @@ void entity_free(Entity **entity)
 	if(!entity) return;
 	if(!*entity) return;
 	self = *entity;
-
+	self->inuse = 0;
 	sprite_free(&self->sprite);
 	*entity = NULL;
 }
@@ -160,10 +160,10 @@ void entity_update_all()
 	}
 }
 
-void entity_intersect_all(Entity *self)
+Entity *entity_intersect_all(Entity *self)
 {
 	int i;
-	if(!self) return;
+	if(!self) return NULL;
 	for(i = 0; i < ENTITY_MAX; i++)
 	{
 		if(!entity_list[i].inuse)
@@ -177,9 +177,8 @@ void entity_intersect_all(Entity *self)
 		}
 		if(entity_intersect(self, &entity_list[i]))
 		{
-			slog("test");
-			//return &entity_list[i];
+			return &entity_list[i];
 		}
 	}
-	return;
+	return NULL;
 }

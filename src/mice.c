@@ -23,8 +23,14 @@ void mice_initialize()
 	mice->velocity = 2;
 	mice->state = UP;
 
+	mice->free = mice_free;
 	mice->think = mice_think;
 	mice->draw = mice_draw;
+}
+
+void mice_free(Entity *entity)
+{
+	entity_free(&entity);
 }
 
 void mice_draw(Entity *entity)
@@ -47,6 +53,10 @@ void mice_draw(Entity *entity)
 		entity->frame = (entity->frame + 1) % 8 + 48;
 		entity_draw(entity, entity->position.x, entity->position.y);
 		break;
+	case FAINT:
+		entity->frame = 0;
+		entity_draw(entity, entity->position.x, entity->position.y);
+		break;
 	}
 }
 
@@ -67,6 +77,10 @@ void mice_think(Entity *entity)
 	else if(entity->state == RIGHT)
 	{
 		entity->position.x += entity->velocity;
+	}
+	else if(entity->state == FAINT)
+	{
+		entity->free(entity);
 	}
 
 
