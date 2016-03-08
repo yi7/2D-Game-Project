@@ -24,7 +24,12 @@ void cat_initialize()
 
 	cat->think = cat_think;
 	cat->draw = cat_draw;
-	//cat->touch = cat_touch;
+	cat->free = cat_free;
+}
+
+void cat_free(Entity *entity)
+{
+	entity_free(&entity);
 }
 
 void cat_draw(Entity *entity)
@@ -51,7 +56,10 @@ void cat_think(Entity *entity)
 	{
 		entity->position.x += entity->velocity;
 	}
-
+	else if(entity->state == FAINT)
+	{
+		entity->free(entity);
+	}
 
 	if(tilemap_entity_out_of_bounds(entity))
 	{

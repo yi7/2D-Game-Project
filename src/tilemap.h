@@ -34,6 +34,7 @@ void tilemap_free_tile(Tile *tile);
 void tilemap_render_tile();
 void tilemap_place_tile();
 void tilemap_remove_tile();
+int tilemap_get_front_tile(Entity *entity);
 void tilemap_entity_on_special_tile(Entity *entity);
 
 int tilemap_entity_out_of_bounds(Entity *entity);

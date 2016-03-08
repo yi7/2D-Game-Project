@@ -8,6 +8,7 @@
 #include "vector.h"
 
 void cat_initialize();
+void cat_free(Entity *entity);
 void cat_draw(Entity *entity);
 void cat_think(Entity *entity);
 void cat_touch(Entity *self);

@@ -60,7 +60,6 @@ int main(int argc, char *argv[])
 		graphics_next_frame();
 		SDL_PumpEvents();
 
-		//entity_intersect_all();
 		entity_think_all();
 
 		while(SDL_PollEvent(&e) != 0)
@@ -69,16 +68,6 @@ int main(int argc, char *argv[])
 			{
 				done = 1;
 			}
-
-			/*if(e.type == SDL_MOUSEBUTTONDOWN)
-			{
-				tilemap_place_tile();
-			}*/
-			/*if(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT))
-			{
-				tilemap_place_tile();
-			}*/
-
 			
 			bool leftclick = false ; //is set to false every frame
 			bool rightclick = false;

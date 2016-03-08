@@ -326,6 +326,45 @@ void tilemap_remove_tile()
 	tile->tile_buffer = NULL;
 }
 
+int tilemap_get_front_tile(Entity *entity) {
+	int x = entity->position.x;
+	int y = entity->position.y;
+
+	int mapX = x / TILE_WIDTH;
+	int mapY = y / TILE_HEIGHT;
+	int tile_pos = tilemap_tpl * mapY + mapX;
+
+	switch(entity->state)
+	{
+	case UP:
+		if(tile_pos - tilemap_tpl > 0)
+		{
+			return tile_pos - tilemap_tpl;
+		}
+		break;
+	case RIGHT:
+		if(tile_pos + 1 % tilemap_tpl != 0 && tile_pos + 1 < TILE_MAX)
+		{
+			return tile_pos + 1;
+		}
+		break;
+	case DOWN:
+		if(tile_pos + tilemap_tpl < TILE_MAX)
+		{
+			return tile_pos + tilemap_tpl;
+		}
+		break;
+	case LEFT:
+		if(tile_pos % tilemap_tpl != 0 && tile_pos - 1 > 0)
+		{
+			return tile_pos - 1;
+		}
+		break;
+	}
+
+	return -1;
+}
+
 void tilemap_entity_on_special_tile(Entity *entity)
 {
 	int x = entity->position.x;
@@ -355,6 +394,18 @@ void tilemap_entity_on_special_tile(Entity *entity)
 	{
 		type = tile->tile_type;
 	}
+	Tile *tile_test;
+	int test = tilemap_get_front_tile(entity);
+	if(test != -1)
+	{
+		tile_test = &tile_list[test];
+		if(tile_test->tile_type == TILE_HOLE)
+		{
+			entity->state = UP;
+			return;
+		}
+	}
+
 
 	switch(type)
 	{
