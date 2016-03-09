@@ -1,6 +1,7 @@
 #ifndef __MICE_H__
 #define __MICE_H__
 
+#include "SDL.h"
 #include "SDL_image.h"
 
 #include "entity.h"

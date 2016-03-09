@@ -5,12 +5,14 @@ const int MICE_H = 40;
 const int MICE_FRAME_W = 40;
 const int MICE_FRAME_H = 40;
 
+Uint32 mice_now;
 Entity *mice = NULL;
 Sprite *mice_sprite;
 
 void mice_initialize()
 {
-	Vect2d pos = {500, 500};
+	mice_now = SDL_GetTicks();
+
 	mice_sprite = sprite_load("images/hover_mouse_sprite.png", MICE_FRAME_W, MICE_FRAME_H);
 	
 	mice = entity_new();
@@ -35,22 +37,27 @@ void mice_free(Entity *entity)
 
 void mice_draw(Entity *entity)
 {
+	int frame = ((SDL_GetTicks() - mice_now) * 7 / 1000) % 8;
 	switch(entity->state)
 	{
 	case UP:
-		entity->frame = (entity->frame + 1) % 8;
+		//entity->frame = (entity->frame + 1) % 8;
+		entity->frame = frame;
 		entity_draw(entity, entity->position.x, entity->position.y);
 		break;
 	case RIGHT:
-		entity->frame = (entity->frame + 1) % 8 + 16;
+		//entity->frame = (entity->frame + 1) % 8 + 16;
+		entity->frame = frame + 16;
 		entity_draw(entity, entity->position.x, entity->position.y);
 		break;
 	case DOWN:
-		entity->frame = (entity->frame + 1) % 8 + 32;
+		//entity->frame = (entity->frame + 1) % 8 + 32;
+		entity->frame = frame + 32;
 		entity_draw(entity, entity->position.x, entity->position.y);
 		break;
 	case LEFT:
-		entity->frame = (entity->frame + 1) % 8 + 48;
+		//entity->frame = (entity->frame + 1) % 8 + 48;
+		entity->frame = frame + 48;
 		entity_draw(entity, entity->position.x, entity->position.y);
 		break;
 	case FAINT:
@@ -81,6 +88,7 @@ void mice_think(Entity *entity)
 	else if(entity->state == FAINT)
 	{
 		entity->free(entity);
+		return;
 	}
 
 

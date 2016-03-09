@@ -22,9 +22,9 @@ void cat_initialize()
 	cat->velocity = 2;
 	cat->state = LEFT;
 
+	cat->free = cat_free;
 	cat->think = cat_think;
 	cat->draw = cat_draw;
-	cat->free = cat_free;
 }
 
 void cat_free(Entity *entity)
@@ -59,6 +59,7 @@ void cat_think(Entity *entity)
 	else if(entity->state == FAINT)
 	{
 		entity->free(entity);
+		return;
 	}
 
 	if(tilemap_entity_out_of_bounds(entity))
