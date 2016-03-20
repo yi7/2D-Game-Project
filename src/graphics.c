@@ -65,13 +65,13 @@ void graphics_initialize_system(char *windowName, int renderWidth, int renderHei
         return;
     };
 
-	/*graphics_surface = SDL_GetWindowSurface(graphics_window);
+	graphics_surface = SDL_GetWindowSurface(graphics_window);
 	if (!graphics_surface)
     {
         slog("failed to create screen surface: %s",SDL_GetError());
         graphics_close_system();
         return;
-    }*/
+    }
 
 	atexit(graphics_close_system);
 	slog("graphics initialized");
@@ -91,10 +91,10 @@ void graphics_close_system()
 	{
 		SDL_DestroyTexture(graphics_texture);
 	}
-	if(graphics_surface)
+	/*if(graphics_surface)
 	{
 		SDL_FreeSurface(graphics_surface);
-	}
+	}*/
 	
 	SDL_Window *graphics_window = NULL;
 	SDL_Renderer *graphics_renderer = NULL;

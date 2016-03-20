@@ -8,6 +8,7 @@
 #include "cat.h"
 #include "entity.h"
 #include "graphics.h"
+#include "menu.h"
 #include "mice.h"
 #include "mouse.h"
 #include "simple_logger.h"
@@ -30,6 +31,7 @@ int main(int argc, char *argv[])
 
 	game_initialize_system();
 	SDL_ShowCursor(SDL_DISABLE);
+
 	/*if(game_get_image_path_from_file(imagepath, "config.ini"))
 	{
 		temp = IMG_Load(imagepath);
@@ -41,18 +43,20 @@ int main(int argc, char *argv[])
 		SDL_FreeSurface(temp);
 		
 	}
-	SDL_BlitSurface(optimized_surface, NULL, graphics_surface, NULL);
-	SDL_UpdateWindowSurface(graphics_window);*/
+	SDL_BlitSurface(optimized_surface, NULL, graphics_surface, NULL);*/
+	//SDL_UpdateWindowSurface(graphics_window);
 
-	mice_initialize();
-	cat_initialize();
+	//mice_initialize();
+	//cat_initialize();
 
 	SDL_Event e;
 	done = 0;
 	do
 	{
-
-		tilemap_render_tile();
+		if(menu_flag)
+			menu_draw();
+		else
+			tilemap_render_tile();
 		entity_draw_all();
 		mouse_draw_self();
 
@@ -83,11 +87,14 @@ int main(int argc, char *argv[])
 			}
 			if(leftclick == true)
 			{
-				tilemap_place_tile();
+				if(menu_flag)
+					menu_click();
+				else
+					tilemap_place_tile();
 			}
 			else if(rightclick == true)
 			{
-				tilemap_remove_tile();
+				//tilemap_remove_tile();
 			}
 		}
 
@@ -115,7 +122,8 @@ void game_initialize_system()
 	graphics_initialize_system("Mice Alert", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 	sprite_initialize_system();
 	entity_initialize_system();
-	tilemap_initialize_system();
+	menu_initialize();
+	//tilemap_initialize_system();
 	mouse_initialize_self();	
 	atexit(game_close_system);
 }
