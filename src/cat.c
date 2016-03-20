@@ -5,12 +5,14 @@ const int CAT_H = 40;
 const int CAT_FRAME_W = 40;
 const int CAT_FRAME_H = 40;
 
+Uint32 cat_now;
 Entity *cat = NULL;
 Sprite *cat_sprite;
 
 void cat_initialize()
 {
-	cat_sprite = sprite_load("images/dot.png", CAT_FRAME_W, CAT_FRAME_H);
+	cat_now = SDL_GetTicks();
+	cat_sprite = sprite_load("images/reg_cat_sprite.png", CAT_FRAME_W, CAT_FRAME_H);
 	
 	cat = entity_new();
 	cat->sprite = cat_sprite;
@@ -34,8 +36,30 @@ void cat_free(Entity *entity)
 
 void cat_draw(Entity *entity)
 {
-	//entity->frame = (entity->frame + 1) % 8;
-	entity_draw(entity, entity->position.x, entity->position.y);
+	int frame = ((SDL_GetTicks() - cat_now) * 7 / 1000) % 8;
+	switch(entity->state)
+	{
+	case UP:
+		entity->frame = frame;
+		entity_draw(entity, entity->position.x, entity->position.y);
+		break;
+	case RIGHT:
+		entity->frame = frame + 16;
+		entity_draw(entity, entity->position.x, entity->position.y);
+		break;
+	case DOWN:
+		entity->frame = frame + 32;
+		entity_draw(entity, entity->position.x, entity->position.y);
+		break;
+	case LEFT:
+		entity->frame = frame + 48;
+		entity_draw(entity, entity->position.x, entity->position.y);
+		break;
+	case FAINT:
+		entity->frame = 0;
+		entity_draw(entity, entity->position.x, entity->position.y);
+		break;
+	}
 }
 
 void cat_think(Entity *entity)

@@ -260,6 +260,13 @@ void tilemap_render_tile()
 
 		SDL_RenderCopy(graphics_renderer, tilemap_tile, &src, &dst);
 	}
+	tilemap_draw_sidemenu();
+}
+
+void tilemap_draw_sidemenu()
+{
+	Sprite *sidemenu = sprite_load("images/level_side_menu.png", 80, tilemap_height);
+	sprite_draw(sidemenu, 0, tilemap_width, 0);
 }
 
 void tilemap_place_tile()

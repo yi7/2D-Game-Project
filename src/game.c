@@ -47,7 +47,6 @@ int main(int argc, char *argv[])
 	mice_initialize();
 	cat_initialize();
 
-	int timer = 0, miceCount = 0;
 	SDL_Event e;
 	done = 0;
 	do
@@ -69,7 +68,7 @@ int main(int argc, char *argv[])
 				done = 1;
 			}
 			
-			bool leftclick = false ; //is set to false every frame
+			bool leftclick = false ;
 			bool rightclick = false;
 			if(e.type == SDL_MOUSEBUTTONDOWN)
 			{
@@ -113,7 +112,7 @@ void game_close_system()
 
 void game_initialize_system()
 {
-	graphics_initialize_system("Game Test", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+	graphics_initialize_system("Mice Alert", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 	sprite_initialize_system();
 	entity_initialize_system();
 	tilemap_initialize_system();

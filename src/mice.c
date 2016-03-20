@@ -41,22 +41,18 @@ void mice_draw(Entity *entity)
 	switch(entity->state)
 	{
 	case UP:
-		//entity->frame = (entity->frame + 1) % 8;
 		entity->frame = frame;
 		entity_draw(entity, entity->position.x, entity->position.y);
 		break;
 	case RIGHT:
-		//entity->frame = (entity->frame + 1) % 8 + 16;
 		entity->frame = frame + 16;
 		entity_draw(entity, entity->position.x, entity->position.y);
 		break;
 	case DOWN:
-		//entity->frame = (entity->frame + 1) % 8 + 32;
 		entity->frame = frame + 32;
 		entity_draw(entity, entity->position.x, entity->position.y);
 		break;
 	case LEFT:
-		//entity->frame = (entity->frame + 1) % 8 + 48;
 		entity->frame = frame + 48;
 		entity_draw(entity, entity->position.x, entity->position.y);
 		break;

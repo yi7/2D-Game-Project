@@ -32,6 +32,7 @@ void tilemap_load_attributes(char *fileptr);
 void tilemap_load_map(char *filename);
 void tilemap_free_tile(Tile *tile);
 void tilemap_render_tile();
+void tilemap_draw_sidemenu();
 void tilemap_place_tile();
 void tilemap_remove_tile();
 void tilemap_check_front_tile(Entity *entity);
