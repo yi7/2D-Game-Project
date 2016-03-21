@@ -47,6 +47,8 @@ void menu_click()
 	{
 		menu_flag = false;
 		tilemap_initialize_system("images/level.map");
+		animal_initialize_mouse();
+		animal_initialize_cat();
 	}
 	else if(rect_intersect(mouse, button2_box))
 	{

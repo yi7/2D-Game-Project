@@ -278,6 +278,7 @@ void tilemap_click()
 	{
 		menu_flag = true;
 		tilemap_close_system();
+		//entity_close_system();
 		return;
 	}
 

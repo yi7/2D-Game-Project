@@ -1,6 +1,7 @@
 #ifndef __MENU_H__
 #define __MENU_H__
 
+#include "animal.h"
 #include "graphics.h"
 #include "simple_logger.h"
 #include "sprite.h"

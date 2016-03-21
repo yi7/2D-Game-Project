@@ -46,18 +46,20 @@ int main(int argc, char *argv[])
 	SDL_BlitSurface(optimized_surface, NULL, graphics_surface, NULL);*/
 	//SDL_UpdateWindowSurface(graphics_window);
 
-	//mice_initialize();
-	//cat_initialize();
-
 	SDL_Event e;
 	done = 0;
 	do
 	{
 		if(menu_flag)
+		{
 			menu_draw();
+		}
 		else
+		{
 			tilemap_render_tile();
-		entity_draw_all();
+			entity_draw_all();
+		}
+
 		mouse_draw_self();
 
 		graphics_next_frame();

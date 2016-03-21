@@ -7,6 +7,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 
+#include "animal.h"
 #include "entity.h"
 #include "graphics.h"
 #include "menu.h"

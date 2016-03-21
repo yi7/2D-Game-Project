@@ -19,6 +19,12 @@ enum State
 	FAINT
 };
 
+enum Type
+{
+	MOUSE,
+	CAT
+};
+
 /**
  * @brief the core data structure for our entity system
  */
@@ -28,7 +34,8 @@ typedef struct Entity_S
 	Vect2d position;
 	Vect2d frameSize;
 	int velocity;
-	enum State state;
+	enum State state; /**<directional state of the entity*/
+	enum Type animal_type; /**<what type of animal the entity is*/
 	Sprite *sprite;
 	int cameraEnt; /**<true if the entity is relative to the camera*/
 	int frame;
