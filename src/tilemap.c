@@ -27,7 +27,7 @@ SDL_Texture *tilemap_tile = NULL;
 SDL_Rect tile_clips[TILE_MAX_SPRITES];
 SDL_Rect tilemap_bound;
 
-void tilemap_initialize_system()
+void tilemap_initialize_system(char *levelname)
 {
 	int i;
 	if(TILE_MAX == 0)
@@ -52,7 +52,7 @@ void tilemap_initialize_system()
 
 	tilemap_load_tiles("images/tiles.png");
 
-	tilemap_load_map("images/level.map");
+	tilemap_load_map(levelname);
 	tilemap_bound.x = 0;
 	tilemap_bound.y = 0;
 	tilemap_bound.w = tilemap_width;
@@ -269,14 +269,15 @@ void tilemap_draw_sidemenu()
 	sprite_draw(sidemenu, 0, tilemap_width, 0);
 }
 
-void tilemap_place_tile()
+void tilemap_click()
 {
 	int x, y;
 	SDL_GetMouseState( &x, &y );
 	
 	if(x > tilemap_width || y > tilemap_height)
 	{
-		slog("Not a valid tile");
+		menu_flag = true;
+		tilemap_close_system();
 		return;
 	}
 

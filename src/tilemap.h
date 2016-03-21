@@ -9,6 +9,7 @@
 
 #include "entity.h"
 #include "graphics.h"
+#include "menu.h"
 #include "mouse.h"
 #include "simple_logger.h"
 #include "sprite.h"
@@ -24,7 +25,7 @@ typedef struct
 	int tile_buffer;
 } Tile;
 
-void tilemap_initialize_system();
+void tilemap_initialize_system(char *levelname);
 void tilemap_close_system();
 
 void tilemap_load_tiles(char *filename);
@@ -33,7 +34,7 @@ void tilemap_load_map(char *filename);
 void tilemap_free_tile(Tile *tile);
 void tilemap_render_tile();
 void tilemap_draw_sidemenu();
-void tilemap_place_tile();
+void tilemap_click();
 void tilemap_remove_tile();
 void tilemap_check_front_tile(Entity *entity);
 void tilemap_entity_on_special_tile(Entity *entity);

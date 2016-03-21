@@ -45,12 +45,12 @@ void menu_click()
 	
 	if(rect_intersect(mouse, button1_box))
 	{
-		slog("button1 clicked\n");
 		menu_flag = false;
-		tilemap_initialize_system();
+		tilemap_initialize_system("images/level.map");
 	}
 	else if(rect_intersect(mouse, button2_box))
 	{
-		slog("button2 clicked\n");
+		menu_flag = false;
+		tilemap_initialize_system("images/level2.map");
 	}
 }

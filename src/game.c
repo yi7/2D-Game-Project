@@ -90,11 +90,14 @@ int main(int argc, char *argv[])
 				if(menu_flag)
 					menu_click();
 				else
-					tilemap_place_tile();
+					tilemap_click();
 			}
 			else if(rightclick == true)
 			{
-				//tilemap_remove_tile();
+				if(menu_flag)
+					menu_click();
+				else
+					tilemap_remove_tile();
 			}
 		}
 
