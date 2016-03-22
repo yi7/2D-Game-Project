@@ -5,11 +5,9 @@
 #include "SDL.h"
 #include "SDL_image.h"
 
-#include "cat.h"
 #include "entity.h"
 #include "graphics.h"
 #include "menu.h"
-#include "mice.h"
 #include "mouse.h"
 #include "simple_logger.h"
 #include "sprite.h"

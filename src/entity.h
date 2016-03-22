@@ -70,6 +70,7 @@ void entity_think_all();
 void entity_draw_all();
 void entity_update_all();
 Entity *entity_intersect_all(Entity *self);
+void entity_free_all();
 
 /*int entity_intersect(Entity *a, Entity *b);
 Rect rect(int a, int b, int c, int d);*/

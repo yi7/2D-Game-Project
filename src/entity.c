@@ -182,3 +182,17 @@ Entity *entity_intersect_all(Entity *self)
 	}
 	return NULL;
 }
+
+void entity_free_all()
+{
+	int i;
+	Entity *entity;
+	for(i = 0; i < ENTITY_MAX; i++)
+	{
+		entity = &entity_list[i];
+		if(entity->inuse)
+		{
+			entity_free(&entity);
+		}
+	}
+}
