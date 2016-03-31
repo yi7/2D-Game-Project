@@ -21,6 +21,8 @@ enum State
 
 enum Type
 {
+	HOVER_MOUSE,
+	SPEED_MOUSE,
 	MOUSE,
 	CAT
 };

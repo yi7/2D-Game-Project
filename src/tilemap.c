@@ -22,6 +22,7 @@ int tilemap_width;
 int tilemap_height;
 int tilemap_tpl;
 
+int tilemap_arrow_count;
 Tile *tile_list = NULL;
 SDL_Texture *tilemap_tile = NULL;
 SDL_Rect tile_clips[TILE_MAX_SPRITES];
@@ -58,7 +59,8 @@ void tilemap_initialize_system(char *levelname)
 	tilemap_bound.w = tilemap_width;
 	tilemap_bound.h = tilemap_height;
 
-	tilemap_render_tile();
+	tilemap_arrow_count = 0;
+	//tilemap_render_tile();
 
 	atexit(tilemap_close_system);
 }
@@ -176,57 +178,57 @@ void tilemap_load_map(char *filename)
 	tile_clips[TILE_RED].h = TILE_HEIGHT;
 
 	tile_clips[TILE_GREEN].x = 0;
-	tile_clips[TILE_GREEN].y = 80;
+	tile_clips[TILE_GREEN].y = 40;
 	tile_clips[TILE_GREEN].w = TILE_WIDTH;
 	tile_clips[TILE_GREEN].h = TILE_HEIGHT;
 
 	tile_clips[TILE_BLUE].x = 0;
-	tile_clips[TILE_BLUE].y = 160;
+	tile_clips[TILE_BLUE].y = 80;
 	tile_clips[TILE_BLUE].w = TILE_WIDTH;
 	tile_clips[TILE_BLUE].h = TILE_HEIGHT;
 
-	tile_clips[TILE_UP].x = 80;
+	tile_clips[TILE_UP].x = 40;
 	tile_clips[TILE_UP].y = 0;
 	tile_clips[TILE_UP].w = TILE_WIDTH;
 	tile_clips[TILE_UP].h = TILE_HEIGHT;
 
-	tile_clips[TILE_RIGHT].x = 80;
-	tile_clips[TILE_RIGHT].y = 80;
+	tile_clips[TILE_RIGHT].x = 40;
+	tile_clips[TILE_RIGHT].y = 40;
 	tile_clips[TILE_RIGHT].w = TILE_WIDTH;
 	tile_clips[TILE_RIGHT].h = TILE_HEIGHT;
 
-	tile_clips[TILE_DOWN].x = 80;
-	tile_clips[TILE_DOWN].y = 160;
+	tile_clips[TILE_DOWN].x = 40;
+	tile_clips[TILE_DOWN].y = 80;
 	tile_clips[TILE_DOWN].w = TILE_WIDTH;
 	tile_clips[TILE_DOWN].h = TILE_HEIGHT;
 
-	tile_clips[TILE_LEFT].x = 160;
+	tile_clips[TILE_LEFT].x = 80;
 	tile_clips[TILE_LEFT].y = 0;
 	tile_clips[TILE_LEFT].w = TILE_WIDTH;
 	tile_clips[TILE_LEFT].h = TILE_HEIGHT;
 
-	tile_clips[TILE_HOLE].x = 160;
-	tile_clips[TILE_HOLE].y = 80;
+	tile_clips[TILE_HOLE].x = 80;
+	tile_clips[TILE_HOLE].y = 40;
 	tile_clips[TILE_HOLE].w = TILE_WIDTH;
 	tile_clips[TILE_HOLE].h = TILE_HEIGHT;
 
-	tile_clips[TILE_BLOCK].x = 160;
-	tile_clips[TILE_BLOCK].y = 160;
+	tile_clips[TILE_BLOCK].x = 80;
+	tile_clips[TILE_BLOCK].y = 80;
 	tile_clips[TILE_BLOCK].w = TILE_WIDTH;
 	tile_clips[TILE_BLOCK].h = TILE_HEIGHT;
 
-	tile_clips[TILE_TOPRIGHT].x = 240;
+	tile_clips[TILE_TOPRIGHT].x = 120;
 	tile_clips[TILE_TOPRIGHT].y = 0;
 	tile_clips[TILE_TOPRIGHT].w = TILE_WIDTH;
 	tile_clips[TILE_TOPRIGHT].h = TILE_HEIGHT;
 
-	tile_clips[TILE_MIDRIGHT].x = 240;
-	tile_clips[TILE_MIDRIGHT].y = 80;
+	tile_clips[TILE_MIDRIGHT].x = 120;
+	tile_clips[TILE_MIDRIGHT].y = 40;
 	tile_clips[TILE_MIDRIGHT].w = TILE_WIDTH;
 	tile_clips[TILE_MIDRIGHT].h = TILE_HEIGHT;
 
-	tile_clips[TILE_BOTRIGHT].x = 240;
-	tile_clips[TILE_BOTRIGHT].y = 160;
+	tile_clips[TILE_BOTRIGHT].x = 120;
+	tile_clips[TILE_BOTRIGHT].y = 80;
 	tile_clips[TILE_BOTRIGHT].w = TILE_WIDTH;
 	tile_clips[TILE_BOTRIGHT].h = TILE_HEIGHT;
 }
@@ -242,23 +244,23 @@ void tilemap_render_tile()
 			slog("Error: tile not loaded");
 		}
 
-		SDL_Rect src;
-		if(tile_list[i].tile_buffer != NULL)
-		{
-			src = tile_clips[tile_list[i].tile_buffer];
-		}
-		else
-		{
-			src = tile_clips[tile_list[i].tile_type];
-		}
-
 		SDL_Rect dst;
 		dst.x = tile->tile_box.x;
 		dst.y = tile->tile_box.y;
 		dst.w = TILE_WIDTH;
 		dst.h = TILE_HEIGHT;
 
+
+		SDL_Rect src;
+		src = tile_clips[tile_list[i].tile_type];
 		SDL_RenderCopy(graphics_renderer, tilemap_tile, &src, &dst);
+
+		if(tile_list[i].tile_buffer != NULL)
+		{
+			SDL_Rect srcb;
+			srcb = tile_clips[tile_list[i].tile_buffer];
+			SDL_RenderCopy(graphics_renderer, tilemap_tile, &srcb, &dst);
+		}
 	}
 	tilemap_draw_sidemenu();
 }
@@ -273,7 +275,6 @@ void tilemap_click()
 {
 	int x, y;
 	SDL_GetMouseState( &x, &y );
-	
 	if(x > tilemap_width || y > tilemap_height)
 	{
 		menu_flag = true;
@@ -339,6 +340,7 @@ void tilemap_remove_tile()
 
 	Tile *tile = &tile_list[tile_pos];
 	tile->tile_buffer = NULL;
+	
 }
 
 void tilemap_check_front_tile(Entity *entity) {

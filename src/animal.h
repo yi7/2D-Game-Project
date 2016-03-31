@@ -10,7 +10,9 @@
 #include "tilemap.h"
 #include "vector.h"
 
-void animal_initialize_mouse();
+void animal_initialize_hovermouse();
+void animal_initialize_speedmouse();
+void animal_initialize_normalmouse();
 void animal_initialize_cat();
 void animal_free(Entity *entity);
 void animal_draw(Entity *entity);

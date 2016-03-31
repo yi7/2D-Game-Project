@@ -6,7 +6,7 @@ Entity *animal = NULL;
 const int ANIMAL_FRAME_W = 40;
 const int ANIMAL_FRAME_H = 40;
 
-void animal_initialize_mouse()
+void animal_initialize_hovermouse()
 {
 	animal_now = SDL_GetTicks();
 	Sprite *animal_sprite = sprite_load("images/hover_mouse_sprite.png", ANIMAL_FRAME_W, ANIMAL_FRAME_H);
@@ -17,6 +17,46 @@ void animal_initialize_mouse()
 	animal->frameSize.x = ANIMAL_FRAME_W;
 	animal->frameSize.y = ANIMAL_FRAME_H;
 	animal->position.x = 0;
+	animal->position.y = 0;
+	animal->velocity = 1;
+	animal->state = UP;
+	animal->animal_type = MOUSE;
+	animal->free = animal_free;
+	animal->think = animal_think;
+	animal->draw = animal_draw;
+}
+
+void animal_initialize_speedmouse()
+{
+	animal_now = SDL_GetTicks();
+	Sprite *animal_sprite = sprite_load("images/race_mouse_sprite.png", ANIMAL_FRAME_W, ANIMAL_FRAME_H);
+	
+	animal = entity_new();
+	animal->sprite = animal_sprite;
+	animal->frame = 0;
+	animal->frameSize.x = ANIMAL_FRAME_W;
+	animal->frameSize.y = ANIMAL_FRAME_H;
+	animal->position.x = 200;
+	animal->position.y = 0;
+	animal->velocity = 4;
+	animal->state = UP;
+	animal->animal_type = MOUSE;
+	animal->free = animal_free;
+	animal->think = animal_think;
+	animal->draw = animal_draw;
+}
+
+void animal_initialize_normalmouse()
+{
+	animal_now = SDL_GetTicks();
+	Sprite *animal_sprite = sprite_load("images/reg_mouse_sprite.png", ANIMAL_FRAME_W, ANIMAL_FRAME_H);
+	
+	animal = entity_new();
+	animal->sprite = animal_sprite;
+	animal->frame = 0;
+	animal->frameSize.x = ANIMAL_FRAME_W;
+	animal->frameSize.y = ANIMAL_FRAME_H;
+	animal->position.x = 300;
 	animal->position.y = 0;
 	animal->velocity = 2;
 	animal->state = UP;
@@ -37,7 +77,7 @@ void animal_initialize_cat()
 	animal->frameSize.x = ANIMAL_FRAME_W;
 	animal->frameSize.y = ANIMAL_FRAME_H;
 	animal->position.x = 0;
-	animal->position.y = 200;
+	animal->position.y = 300;
 	animal->velocity = 2;
 	animal->state = LEFT;
 	animal->animal_type = CAT;
@@ -136,7 +176,7 @@ void animal_touch(Entity *self)
 {
 	Entity *other;
 	
-	if(self->animal_type = MOUSE)
+	if(self->animal_type == MOUSE)
 	{
 		return;
 	}
