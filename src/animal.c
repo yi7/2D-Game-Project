@@ -20,7 +20,7 @@ void animal_initialize_hovermouse()
 	animal->position.y = 0;
 	animal->velocity = 1;
 	animal->state = UP;
-	animal->animal_type = MOUSE;
+	animal->animal_type = HOVER_MOUSE;
 	animal->free = animal_free;
 	animal->think = animal_think;
 	animal->draw = animal_draw;
@@ -40,7 +40,7 @@ void animal_initialize_speedmouse()
 	animal->position.y = 0;
 	animal->velocity = 4;
 	animal->state = UP;
-	animal->animal_type = MOUSE;
+	animal->animal_type = SPEED_MOUSE;
 	animal->free = animal_free;
 	animal->think = animal_think;
 	animal->draw = animal_draw;
@@ -176,7 +176,7 @@ void animal_touch(Entity *self)
 {
 	Entity *other;
 	
-	if(self->animal_type == MOUSE)
+	if(self->animal_type != CAT)
 	{
 		return;
 	}

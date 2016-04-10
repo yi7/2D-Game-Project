@@ -354,6 +354,8 @@ void tilemap_check_front_tile(Entity *entity) {
 	int tile_front = -1;
 	Tile *tile_check;
 
+	Sound *bump = sound_load_chunk("sounds/normal-hitfinish.wav");
+
 	switch(entity->state)
 	{
 	case UP:
@@ -387,6 +389,7 @@ void tilemap_check_front_tile(Entity *entity) {
 		tile_check = &tile_list[tile_front];
 		if(tile_check->tile_type == TILE_BLOCK)
 		{
+			Mix_PlayChannel(-1, bump->chunk, 0);
 			switch(entity->state)
 			{
 			case UP:
@@ -410,6 +413,8 @@ void tilemap_entity_on_special_tile(Entity *entity)
 {
 	int x = entity->position.x;
 	int y = entity->position.y;
+	Sound *fall = sound_load_chunk("sounds/spinnerspin.wav");
+	Sound *change = sound_load_chunk("sounds/soft-hitnormal.wav");
 	
 	if((x % TILE_WIDTH) != 0 && (y % TILE_HEIGHT) != 0)
 	{
@@ -439,19 +444,27 @@ void tilemap_entity_on_special_tile(Entity *entity)
 	switch(type)
 	{
 	case TILE_UP:
+		Mix_PlayChannel(-1, change->chunk, 0);
 		entity->state = UP;
 		break;
 	case TILE_RIGHT:
+		Mix_PlayChannel(-1, change->chunk, 0);
 		entity->state = RIGHT;
 		break;
 	case TILE_DOWN:
+		Mix_PlayChannel(-1, change->chunk, 0);
 		entity->state = DOWN;
 		break;
 	case TILE_LEFT:
+		Mix_PlayChannel(-1, change->chunk, 0);
 		entity->state = LEFT;
 		break;
 	case TILE_HOLE:
-		entity->state = FAINT;
+		if(!entity->animal_type == HOVER_MOUSE)
+		{
+			Mix_PlayChannel(-1, fall->chunk, 0);
+			entity->state = FAINT;
+		}
 		break;
 	}
 	tilemap_check_front_tile(entity);

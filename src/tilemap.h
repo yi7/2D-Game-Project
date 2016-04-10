@@ -13,6 +13,7 @@
 #include "menu.h"
 #include "mouse.h"
 #include "simple_logger.h"
+#include "sound.h"
 #include "sprite.h"
 
 extern SDL_Rect tilemap_bound;
