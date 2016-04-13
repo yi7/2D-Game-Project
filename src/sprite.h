@@ -22,9 +22,22 @@ typedef struct
 	int fpl;				/**<how many frames per line in this sprite sheet*/
 } Sprite;
 
+/**
+ * @brief initializes the sprite system
+ */
 void sprite_initialize_system();
+
+/**
+ * @brief closes the sprite system
+ */
 void sprite_close_system();
 
+/**
+ * @brief loads the sprite and return a pointer to it
+ * @param filename the filename of the sprite to load
+ * @param the frame width of the sprite
+ * @param the frame height of the sprite
+ */
 Sprite* sprite_load(char *filename, int frameW, int frameH);
 
 /**
@@ -33,7 +46,13 @@ Sprite* sprite_load(char *filename, int frameW, int frameH);
  */
 void sprite_free(Sprite **sprite);
 
-
+/**
+ * @brief draws the sprite
+ * @param sprite the sprite to draw
+ * @param the frame index of the sprite to draw
+ * @param the width of the sprite frame
+ * @param the height of the sprite frame
+ */
 void sprite_draw(Sprite *sprite, int frame, int drawX, int drawY);
 
 #endif

@@ -19,12 +19,28 @@ extern SDL_Window *graphics_window;
 extern SDL_Surface *graphics_surface;
 extern SDL_Renderer *graphics_renderer;
 
+/**
+ * @brief initializes the graphics system
+ * @param windowName the window name of the window
+ * @param renderWidth the width of the window
+ * @param renderHeight the height of the window
+ * @param fullscreen flag that sets whether its full screen or windowed
+ */
 void graphics_initialize_system(char *windowName, int renderWidth, int renderHeight, int fullscreen);
+
+/**
+ * @brief closes the graphics system
+ */
 void graphics_close_system();
 
-void graphics_render_surface_to_screen(SDL_Surface *surface, SDL_Rect srcRect, int x, int y);
-void graphics_draw_mouse();
-void graphics_delay_frame();
+/**
+ * @brief sets the fps of the game
+ */
+void graphics_frame_delay();
+
+/**
+ * @brief sets the next frame to load
+ */
 void graphics_next_frame();
 
 #endif

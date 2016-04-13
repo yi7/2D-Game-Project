@@ -10,8 +10,19 @@
 
 extern int menu_flag;
 
+/**
+ * @brief initializes the menu
+ */
 void menu_initialize();
+
+/**
+ * @brief draws the menu
+ */
 void menu_draw();
+
+/**
+ * @brief depending on the mouse position, interact with the ui
+ */
 void menu_click();
 
 #endif

@@ -96,11 +96,6 @@ int entity_intersect(Entity *a, Entity *b)
 	return rect_intersect(aBox, bBox);
 }
 
-void entity_think(Entity *entity)
-{
-
-}
-
 void entity_think_all()
 {
 	int i;
