@@ -144,8 +144,6 @@ void entity_update_all()
 			continue;
 		}
 
-		//vec2d_add(entity_list[i].position, entity_list[i].velocity, entity_list[i].position);
-
 		if(!entity_list[i].update)
 		{
 			continue;

@@ -58,6 +58,11 @@ void tilemap_load_map(char *filename);
 void tilemap_free_tile(Tile *tile);
 
 /**
+ * @brief clears any secondary tiles on map
+ */
+void tilemap_clear_tile();
+
+/**
  * @brief draws the tile that was placed
  */
 void tilemap_render_tile();

@@ -8,24 +8,6 @@ const int ANIMAL_FRAME_H = 40;
 
 void animal_initialize(int x, int y, State direction, char *type)
 {
-	/*State direction;
-	if(strcmp(dir, "up") == 0)
-	{
-		direction = UP;
-	}
-	else if(strcmp(dir, "down") == 0)
-	{
-		direction = DOWN;
-	}
-	else if(strcmp(dir, "left") == 0)
-	{
-		direction = LEFT;
-	}
-	else if(strcmp(dir, "right") == 0)
-	{
-		direction = RIGHT;
-	}*/
-
 	if(strcmp(type, "normal_mouse") == 0)
 	{
 		animal_initialize_normalmouse(x, y, direction);
@@ -62,6 +44,7 @@ void animal_initialize_hovermouse(int x, int y, State direction)
 	animal->free = animal_free;
 	animal->think = animal_think;
 	animal->draw = animal_draw;
+	animal->update = animal_update;
 }
 
 void animal_initialize_speedmouse(int x, int y, State direction)
@@ -82,6 +65,7 @@ void animal_initialize_speedmouse(int x, int y, State direction)
 	animal->free = animal_free;
 	animal->think = animal_think;
 	animal->draw = animal_draw;
+	animal->update = animal_update;
 }
 
 void animal_initialize_normalmouse(int x, int y, State direction)
@@ -102,6 +86,7 @@ void animal_initialize_normalmouse(int x, int y, State direction)
 	animal->free = animal_free;
 	animal->think = animal_think;
 	animal->draw = animal_draw;
+	animal->update = animal_update;
 }
 
 void animal_initialize_normalcat(int x, int y, State direction)
@@ -122,6 +107,7 @@ void animal_initialize_normalcat(int x, int y, State direction)
 	animal->free = animal_free;
 	animal->think = animal_think;
 	animal->draw = animal_draw;
+	animal->update = animal_update;
 }
 
 void animal_free(Entity *entity)
@@ -226,4 +212,26 @@ void animal_touch(Entity *self)
 	}
 
 	other->state = FREE;
+}
+
+void animal_update(Entity *entity)
+{
+	if(!entity)
+	{
+		slog("Error: no entity to update");
+		return;
+	}
+	
+	if(entity->animal_type == MOUSE || entity->animal_type == CAT)
+	{
+		entity->velocity = 2;
+	}
+	else if(entity->animal_type == HOVER_MOUSE)
+	{
+		entity->velocity = 1;
+	}
+	else if(entity->animal_type == SPEED_MOUSE)
+	{
+		entity->velocity = 4;
+	}
 }

@@ -75,4 +75,10 @@ void animal_think(Entity *entity);
  */
 void animal_touch(Entity *self);
 
+/**
+ * @brief updates the entity velocity
+ * @param entity the entity to update
+ */
+void animal_update(Entity *entity);
+
 #endif

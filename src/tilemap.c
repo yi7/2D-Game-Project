@@ -207,6 +207,19 @@ void tilemap_load_map(char *filename)
 	tile_clips[TILE_SPEED].h = TILE_HEIGHT;
 }
 
+void tilemap_clear_tile()
+{
+	int i;
+	for(i = 0; i < TILE_MAX; i++)
+	{
+		Tile *tile = &tile_list[i];
+		if(tile->tile_buffer != NULL)
+		{
+			tile->tile_buffer = NULL;
+		}
+	}
+}
+
 void tilemap_render_tile()
 {
 	int i;
@@ -276,11 +289,13 @@ void tilemap_click()
 	{
 		if(rect_intersect(mouse, play_box))
 		{
+			entity_update_all();
 			return;
 		}
 		else if(rect_intersect(mouse, reset_box))
 		{
 			entity_free_all();
+			tilemap_clear_tile();
 			tilemap_load_animals();
 			return;
 		}
