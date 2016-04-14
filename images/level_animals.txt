@@ -1,0 +1,3 @@
+0 0 right normal_mouse
+200 200 down hover_mouse
+0 200 up normal_cat

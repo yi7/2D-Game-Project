@@ -16,7 +16,7 @@ enum State
 	DOWN,
 	LEFT,
 	RIGHT,
-	FAINT
+	FREE
 };
 
 enum Type

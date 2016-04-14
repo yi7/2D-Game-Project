@@ -45,7 +45,7 @@ void menu_draw()
 	sprite_draw(button1, 0, button1_box.x, button1_box.y);
 	sprite_draw(button2, 16, button2_box.x, button2_box.y);
 	sprite_draw(button3, 32, button3_box.x, button3_box.y);	
-	sprite_draw(button4, 48, button4_box.x, button4_box.y);	
+	sprite_draw(button4, 48, button4_box.x, button4_box.y);
 }
 
 void menu_click()
@@ -62,31 +62,21 @@ void menu_click()
 	if(rect_intersect(mouse, button1_box))
 	{
 		menu_flag = false;
-		tilemap_initialize_system("images/level.map");
-		animal_initialize_hovermouse();
-		animal_initialize_speedmouse();
-		animal_initialize_normalmouse();
-		animal_initialize_cat();
+		tilemap_initialize_system("images/level.map", "images/level_animals.txt");
 	}
 	else if(rect_intersect(mouse, button2_box))
 	{
 		menu_flag = false;
-		tilemap_initialize_system("images/level2.map");
-		animal_initialize_hovermouse();
-		animal_initialize_cat();
+		tilemap_initialize_system("images/level2.map", "images/level_animals.txt");
 	}
 	else if(rect_intersect(mouse, button3_box))
 	{
 		menu_flag = false;
-		tilemap_initialize_system("images/level3.map");
-		animal_initialize_hovermouse();
-		animal_initialize_cat();
+		tilemap_initialize_system("images/level3.map", "images/level_animals.txt");
 	}
 	else if(rect_intersect(mouse, button4_box))
 	{
 		menu_flag = false;
-		tilemap_initialize_system("images/level4.map");
-		animal_initialize_hovermouse();
-		animal_initialize_cat();
+		tilemap_initialize_system("images/level4.map", "images/level_animals.txt");
 	}
 }

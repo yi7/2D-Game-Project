@@ -30,8 +30,9 @@ typedef struct
 /**
  * @brief initializes the tilmap system
  * @param levelname the map file to load
+ * @param animal_positions text file containing the positions of the animals in the level
  */
-void tilemap_initialize_system(char *levelname);
+void tilemap_initialize_system(char *levelname, char *animal_positions);
 
 /**
  * @brief closes the tilemap system
@@ -43,12 +44,6 @@ void tilemap_close_system();
  * @param filename the filname of the tile sprite sheet
  */
 void tilemap_load_tiles(char *filename);
-
-/**
- * @brief loads the attributes of a map such as width and height
- * @param fileptr the FILE pointer of a file containing the attributes
- */
-void tilemap_load_attributes(char *fileptr);
 
 /**
  * @brief loads the map by placing the tiles
@@ -99,5 +94,11 @@ void tilemap_entity_on_special_tile(Entity *entity);
  * @param entity the entity to check whether its going out of the map or not
  */
 int tilemap_entity_out_of_bounds(Entity *entity);
+
+/**
+ * @brief loads animals by reading their positions
+ * @param filename containing the animal positions
+ */
+void tilemap_load_animals();
 
 #endif
