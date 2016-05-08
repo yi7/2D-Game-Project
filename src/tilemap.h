@@ -86,7 +86,9 @@ void tilemap_remove_tile();
  * @brief checks the tile in front of an entity
  * @param entity the entity to check whats in front of it
  */
-void tilemap_check_front_tile(Entity *entity);
+int tilemap_check_front_tile(Entity *entity);
+
+void tilemap_entity_front(Entity *entity);
 
 /**
  * @brief checks the tile that an entity is on top of

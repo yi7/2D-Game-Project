@@ -211,6 +211,12 @@ void animal_touch(Entity *self)
 		return;
 	}
 
+	if(other->animal_type == CAT)
+	{
+		return;
+	}
+	Sound *fail = sound_load_chunk("sounds/sectionfail.mp3");
+	Mix_PlayChannel(-1, fail->chunk, 0);
 	other->state = FREE;
 }
 

@@ -4,6 +4,8 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
+#include "glib.h"
+#include "jansson.h"
 
 #include "entity.h"
 #include "graphics.h"
@@ -22,6 +24,9 @@ bool game_get_image_path_from_file(char *filepath, char *filename);
 
 int main(int argc, char *argv[])
 {
+	GList* list = NULL;
+	json_t *root;
+
 	SDL_Surface *optimized_surface = NULL;
 	SDL_Surface *temp = NULL;
 	Sound *bg_music = NULL;

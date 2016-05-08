@@ -1,0 +1,3 @@
+680 240 down normal_mouse
+680 160 down normal_cat
+760 360 down normal_cat

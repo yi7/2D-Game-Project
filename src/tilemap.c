@@ -21,14 +21,17 @@ const int TILE_MAX_SPRITES	= 12;
 const int TILEMAP_WIDTH = 840;
 const int TILEMAP_HEIGHT = 560;
 const int tpl = 21;
+int m_count;
 
 int tilemap_arrow_count;
 Tile *tile_list = NULL;
 SDL_Texture *tilemap_tile = NULL;
 SDL_Rect tile_clips[TILE_MAX_SPRITES];
 SDL_Rect tilemap_bound;
+char *level_name;
 
 char *animal_positions;
+int play_flag;
 Sprite *play_button;
 SDL_Rect play_box;
 Sprite *reset_button;
@@ -38,8 +41,11 @@ SDL_Rect back_box;
 
 void tilemap_initialize_system(char *levelname, char *animal_pos)
 {
+	play_flag = 0;
 	int i;
 	animal_positions = animal_pos;
+	level_name = levelname;
+	slog("%s, %s\n", levelname, animal_pos);
 	if(TILE_MAX == 0)
 	{
 		slog("Error: no tiles to place on map");
@@ -269,7 +275,7 @@ void tilemap_draw_sidemenu()
 	reset_button = sprite_load("images/buttons.png", reset_box.w, reset_box.h);
 	back_box.x = TILEMAP_WIDTH + 20;
 	back_box.y = TILEMAP_HEIGHT - 60;
-	back_box.w = 80;
+	back_box.w = 40;
 	back_box.h = 40;
 	back_button = sprite_load("images/buttons.png", back_box.w, back_box.h);
 
@@ -290,6 +296,7 @@ void tilemap_click()
 		if(rect_intersect(mouse, play_box))
 		{
 			entity_update_all();
+			play_flag = 1;
 			return;
 		}
 		else if(rect_intersect(mouse, reset_box))
@@ -297,6 +304,8 @@ void tilemap_click()
 			entity_free_all();
 			tilemap_clear_tile();
 			tilemap_load_animals();
+			play_flag = 0;
+			//m_count = m_max;
 			return;
 		}
 		else if(rect_intersect(mouse, back_box))
@@ -319,7 +328,7 @@ void tilemap_click()
 	Tile *tile = &tile_list[tile_pos];
 	int type = tile->tile_buffer;
 	
-	if(tile->tile_type == TILE_HOLE || tile->tile_type == TILE_BLOCK || tile->tile_type == TILE_MUD)
+	if(tile->tile_type != TILE_PLAIN)
 	{
 		return;
 	}
@@ -365,7 +374,7 @@ void tilemap_remove_tile()
 	
 }
 
-void tilemap_check_front_tile(Entity *entity) {
+int tilemap_check_front_tile(Entity *entity) {
 	int x = entity->position.x;
 	int y = entity->position.y;
 
@@ -408,25 +417,70 @@ void tilemap_check_front_tile(Entity *entity) {
 
 	if(tile_front != -1)
 	{
-		tile_check = &tile_list[tile_front];
-		if(tile_check->tile_type == TILE_BLOCK)
+		return tile_list[tile_front].tile_type;
+	}
+	else
+	{
+		return tile_front;
+	}
+}
+
+void tilemap_entity_front(Entity *entity)
+{
+	if(tilemap_check_front_tile(entity) == TILE_BLOCK || tilemap_check_front_tile(entity) == -1)
+	{
+		Sound *change = sound_load_chunk("sounds/soft-hitnormal.wav");
+		Mix_PlayChannel(-1, change->chunk, 0);
+		switch(entity->state)
 		{
-			Mix_PlayChannel(-1, bump->chunk, 0);
-			switch(entity->state)
+		case UP:
+			entity->state = LEFT;
+			if(tilemap_check_front_tile(entity) == TILE_BLOCK) 
 			{
-			case UP:
 				entity->state = RIGHT;
-				break;
-			case RIGHT:
-				entity->state = DOWN;
-				break;
-			case DOWN:
-				entity->state = LEFT;
-				break;
-			case LEFT:
-				entity->state = UP;
-				break;
+				if(tilemap_check_front_tile(entity) == TILE_BLOCK)
+				{
+					entity->state = DOWN;
+					return;
+				}
 			}
+			break;
+		case RIGHT:
+			entity->state = UP;
+			if(tilemap_check_front_tile(entity) == TILE_BLOCK)
+			{
+				entity->state = DOWN;
+				if(tilemap_check_front_tile(entity) == TILE_BLOCK)
+				{
+					entity->state = LEFT;
+					return;
+				}
+			}
+			break;
+		case DOWN:
+			entity->state = RIGHT;
+			if(tilemap_check_front_tile(entity) == TILE_BLOCK)
+			{
+				entity->state = LEFT;
+				if(tilemap_check_front_tile(entity) == TILE_BLOCK)
+				{
+					entity->state = UP;
+					return;
+				}
+			}
+			break;
+		case LEFT:
+			entity->state = DOWN;
+			if(tilemap_check_front_tile(entity) == TILE_BLOCK)
+			{
+				entity->state = UP;
+				if(tilemap_check_front_tile(entity) == TILE_BLOCK)
+				{
+					entity->state = RIGHT;
+					return;
+				}
+			}
+			break;
 		}
 	}
 }
@@ -437,20 +491,50 @@ void tilemap_entity_on_special_tile(Entity *entity)
 	int y = entity->position.y;
 	Sound *fall = sound_load_chunk("sounds/spinnerspin.wav");
 	Sound *change = sound_load_chunk("sounds/soft-hitnormal.wav");
-	
-	if((x % TILE_WIDTH) != 0 && (y % TILE_HEIGHT) != 0)
-	{
-		return;
-	}
-	
+	Sound *success = sound_load_chunk("sounds/sectionpass.mp3");
+	Sound *fail = sound_load_chunk("sounds/sectionfail.mp3");
+
 	int mapX = x / TILE_WIDTH;
 	int mapY = y / TILE_HEIGHT;
 	int tile_pos = tpl * mapY + mapX;
 	Tile *tile = &tile_list[tile_pos];
 
+	if(tile->tile_type == TILE_MUD && play_flag)
+	{
+		switch(entity->animal_type)
+		{
+		case SPEED_MOUSE:
+			entity->velocity = 2;
+			break;
+		case HOVER_MOUSE:
+			break;
+		case MOUSE:
+			entity->velocity = 1;
+			break;
+		case CAT:
+			break;
+		}
+	}
+
 	if(tile->tile_box.x != x || tile->tile_box.y != y)
 	{
 		return;
+	}
+
+	if(tile->tile_type != TILE_MUD && play_flag)
+	{
+		switch(entity->animal_type)
+		{
+		case SPEED_MOUSE:
+			entity->velocity = 4;
+			break;
+		case MOUSE:
+			entity->velocity = 2;
+			break;
+		case CAT:
+			entity->velocity = 2;
+			break;
+		}
 	}
 
 	int type;
@@ -482,15 +566,82 @@ void tilemap_entity_on_special_tile(Entity *entity)
 		entity->state = LEFT;
 		break;
 	case TILE_HOLE:
-		if(!entity->animal_type == HOVER_MOUSE)
+		if(entity->animal_type != HOVER_MOUSE)
 		{
 			Mix_PlayChannel(-1, fall->chunk, 0);
 			entity->state = FREE;
 		}
 		break;
-	
+	case TILE_REG:
+		if(entity->animal_type != MOUSE && entity->animal_type != CAT)
+		{
+			entity->animal_type = MOUSE;
+			entity->sprite = sprite_load("images/reg_mouse_sprite.png", 40, 40);
+			entity->velocity = 2;
+		}
+		break;
+	case TILE_HOVER:
+		if(entity->animal_type != HOVER_MOUSE && entity->animal_type != CAT)
+		{
+			entity->animal_type = HOVER_MOUSE;
+			entity->sprite = sprite_load("images/hover_mouse_sprite.png", 40, 40);
+			entity->velocity = 1;
+		}
+		break;
+	case TILE_SPEED:
+		if(entity->animal_type != SPEED_MOUSE && entity->animal_type != CAT)
+		{
+			entity->animal_type = SPEED_MOUSE;
+			entity->sprite = sprite_load("images/race_mouse_sprite.png", 40, 40);
+			entity->velocity = 4;
+		}
+		break;
+	case TILE_HOME:
+		if(entity->animal_type == SPEED_MOUSE || entity->animal_type == HOVER_MOUSE || entity->animal_type == MOUSE)
+		{
+			Mix_PlayChannel(-1, success->chunk, 0);
+			entity->state = FREE;
+			m_count--;
+			if(m_count == 0)
+			{
+				slog("Cleared Level\n");
+				if(strcmp(level_name, "images/level.map") == 0)
+				{
+					tilemap_close_system();
+					entity_free_all();
+					tilemap_initialize_system("images/level2.map", "images/level2_animals.txt");
+					return;
+				}
+				else if(strcmp(level_name, "images/level2.map") == 0)
+				{
+					tilemap_close_system();
+					entity_free_all();
+					tilemap_initialize_system("images/level3.map", "images/level3_animals.txt");
+					return;
+				}
+				else if(strcmp(level_name, "images/level3.map") == 0)
+				{
+					tilemap_close_system();
+					entity_free_all();
+					tilemap_initialize_system("images/level4.map", "images/level4_animals.txt");
+					return;
+				}
+				else if(strcmp(level_name, "images/level4.map") == 0)
+				{
+					menu_flag = true;
+					tilemap_close_system();
+					entity_free_all();
+					return;
+				}
+			}
+		}
+		else
+		{
+			Mix_PlayChannel(-1, fail->chunk, 0);
+		}
+		break;
 	}
-	tilemap_check_front_tile(entity);
+	tilemap_entity_front(entity);
 }
 
 int tilemap_entity_out_of_bounds(Entity *entity)
@@ -511,6 +662,7 @@ void tilemap_load_animals()
 	char animal_type[16];
 	State direction;
 	FILE *fileptr = NULL;
+	m_count = 0;
 
 	fileptr = fopen(animal_positions, "r");
 	if(!fileptr)
@@ -536,6 +688,13 @@ void tilemap_load_animals()
 		else if(strcmp(dir, "right") == 0)
 		{
 			direction = RIGHT;
+		}
+
+		if(	strcmp(animal_type, "normal_mouse") == 0 ||
+			strcmp(animal_type, "hover_mouse") == 0 ||
+			strcmp(animal_type, "speed_mouse") == 0 )
+		{
+			m_count++;
 		}
 
 		animal_initialize(x, y, direction, animal_type);

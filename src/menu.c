@@ -41,11 +41,52 @@ void menu_initialize()
 
 void menu_draw()
 {
-	SDL_RenderCopy(graphics_renderer, background->image, NULL, NULL); 
-	sprite_draw(button1, 0, button1_box.x, button1_box.y);
-	sprite_draw(button2, 16, button2_box.x, button2_box.y);
-	sprite_draw(button3, 32, button3_box.x, button3_box.y);	
-	sprite_draw(button4, 48, button4_box.x, button4_box.y);
+	SDL_RenderCopy(graphics_renderer, background->image, NULL, NULL);
+
+	int x, y;
+	SDL_Rect mouse;
+
+	SDL_GetMouseState( &x, &y );
+	mouse.x = x;
+	mouse.y = y;
+	mouse.w = 0;
+	mouse.h = 0;
+	
+	if(rect_intersect(mouse, button1_box))
+	{
+		sprite_draw(button1, 1, button1_box.x, button1_box.y);
+	}
+	else
+	{
+		sprite_draw(button1, 0, button1_box.x, button1_box.y);
+	}
+
+	if(rect_intersect(mouse, button2_box))
+	{
+		sprite_draw(button2, 17, button2_box.x, button2_box.y);
+	}
+	else
+	{
+		sprite_draw(button2, 16, button2_box.x, button2_box.y);
+	}
+
+	if(rect_intersect(mouse, button3_box))
+	{
+		sprite_draw(button3, 33, button3_box.x, button3_box.y);	
+	}
+	else
+	{
+		sprite_draw(button3, 32, button3_box.x, button3_box.y);	
+	}
+
+	if(rect_intersect(mouse, button4_box))
+	{
+		sprite_draw(button4, 49, button4_box.x, button4_box.y);
+	}
+	else
+	{
+		sprite_draw(button4, 48, button4_box.x, button4_box.y);
+	}
 }
 
 void menu_click()
@@ -67,16 +108,16 @@ void menu_click()
 	else if(rect_intersect(mouse, button2_box))
 	{
 		menu_flag = false;
-		tilemap_initialize_system("images/level2.map", "images/level_animals.txt");
+		tilemap_initialize_system("images/level2.map", "images/level2_animals.txt");
 	}
 	else if(rect_intersect(mouse, button3_box))
 	{
 		menu_flag = false;
-		tilemap_initialize_system("images/level3.map", "images/level_animals.txt");
+		tilemap_initialize_system("images/level3.map", "images/level3_animals.txt");
 	}
 	else if(rect_intersect(mouse, button4_box))
 	{
 		menu_flag = false;
-		tilemap_initialize_system("images/level4.map", "images/level_animals.txt");
+		tilemap_initialize_system("images/level4.map", "images/level4_animals.txt");
 	}
 }

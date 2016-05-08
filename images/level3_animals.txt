@@ -1,0 +1,4 @@
+240 280 up normal_mouse
+480 280 up normal_cat
+480 320 up normal_cat
+480 360 up normal_cat
