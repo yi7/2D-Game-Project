@@ -112,6 +112,7 @@ int main(int argc, char *argv[])
 					rightclick = true;
 				}
 			}
+
 			if(leftclick == true)
 			{
 				if(menu_flag)
@@ -125,6 +126,64 @@ int main(int argc, char *argv[])
 					menu_click();
 				else
 					tilemap_remove_tile();
+			}
+
+			bool pressed = false;
+			if(e.type == SDL_KEYDOWN)
+			{
+				if(!pressed)
+				{
+					if(make_flag)
+					{
+						keys = SDL_GetKeyboardState(NULL);
+						if(keys[SDL_SCANCODE_W])
+						{
+							State state = UP;
+							tilemap_m_click(state);
+						}
+						else if(keys[SDL_SCANCODE_A])
+						{
+							State state = LEFT;
+							tilemap_m_click(state);
+						}
+						else if(keys[SDL_SCANCODE_S])
+						{
+							State state = DOWN;
+							tilemap_m_click(state);
+						}
+						else if(keys[SDL_SCANCODE_D])
+						{
+							State state = RIGHT;
+							tilemap_m_click(state);
+						}
+
+						if(keys[SDL_SCANCODE_T])
+						{
+							State state = UP;
+							tilemap_c_click(state);
+						}
+						else if(keys[SDL_SCANCODE_F])
+						{
+							State state = LEFT;
+							tilemap_c_click(state);
+						}
+						else if(keys[SDL_SCANCODE_G])
+						{
+							State state = DOWN;
+							tilemap_c_click(state);
+						}
+						else if(keys[SDL_SCANCODE_H])
+						{
+							State state = RIGHT;
+							tilemap_c_click(state);
+						}
+					}
+				}
+				pressed = true;
+			}
+			else if(e.type == SDL_KEYUP)
+			{
+				pressed = false;
 			}
 		}
 

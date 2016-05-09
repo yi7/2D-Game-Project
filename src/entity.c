@@ -189,3 +189,55 @@ void entity_free_all()
 		}
 	}
 }
+
+void entity_log_all()
+{
+	int i;
+	Entity *entity;
+	FILE *fp = NULL;
+	fp = fopen("images/made.txt", "w");
+	if(!fp)
+	{
+		slog("Error: Could not open entity log file\n");
+		return;
+	}
+
+	for(i = 0; i < ENTITY_MAX; i++)
+	{
+		entity = &entity_list[i];
+		if(entity->inuse)
+		{
+			char direction[10];
+			if(entity->state == UP)
+			{
+				strcpy(direction, "up");
+			}
+			else if(entity->state == LEFT)
+			{
+				strcpy(direction, "left");
+			}
+			else if(entity->state == DOWN)
+			{
+				strcpy(direction, "down");
+			}
+			else if(entity->state == RIGHT)
+			{
+				strcpy(direction, "right");
+			}
+
+			int x = entity->position.x;
+			int y = entity->position.y;
+			if(entity->animal_type == MOUSE)
+			{
+				fprintf(fp, "%d %d %s %s\r\n", x, y, direction, "normal_mouse");
+				slog("mouse logged\n");
+			}
+			else
+			{
+				fprintf(fp, "%d %d %s %s\r\n", x, y, direction, "normal_cat");
+				slog("cat logged\n");
+			}
+		}
+	}
+	fclose(fp);
+}

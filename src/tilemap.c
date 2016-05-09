@@ -22,6 +22,7 @@ const int TILEMAP_WIDTH = 840;
 const int TILEMAP_HEIGHT = 560;
 const int tpl = 21;
 int m_count;
+int make_flag;
 
 int tilemap_arrow_count;
 Tile *tile_list = NULL;
@@ -38,6 +39,8 @@ Sprite *reset_button;
 SDL_Rect reset_box;
 Sprite *back_button;
 SDL_Rect back_box;
+Sprite *save_button;
+SDL_Rect save_box;
 
 void tilemap_initialize_system(char *levelname, char *animal_pos)
 {
@@ -67,6 +70,15 @@ void tilemap_initialize_system(char *levelname, char *animal_pos)
 	}
 
 	tilemap_load_tiles("images/tiles.png");
+
+	if(strcmp(level_name, "images/make.map") == 0)
+	{
+		make_flag = true;
+	}
+	else
+	{
+		make_flag = false;
+	}
 
 	tilemap_load_map(levelname);
 	tilemap_bound.x = 0;
@@ -267,21 +279,31 @@ void tilemap_draw_sidemenu()
 	play_box.y = 20;
 	play_box.w = 40;
 	play_box.h = 40;
-	play_button = sprite_load("images/buttons.png", play_box.w, play_box.h);
+	play_button = sprite_load("images/menu_button.png", play_box.w, play_box.h);
 	reset_box.x = TILEMAP_WIDTH + 20;
 	reset_box.y = 80;
 	reset_box.w = 40;
 	reset_box.h = 40;
-	reset_button = sprite_load("images/buttons.png", reset_box.w, reset_box.h);
+	reset_button = sprite_load("images/menu_button.png", reset_box.w, reset_box.h);
 	back_box.x = TILEMAP_WIDTH + 20;
 	back_box.y = TILEMAP_HEIGHT - 60;
 	back_box.w = 40;
 	back_box.h = 40;
-	back_button = sprite_load("images/buttons.png", back_box.w, back_box.h);
+	back_button = sprite_load("images/menu_button.png", back_box.w, back_box.h);
 
-	sprite_draw(play_button, 64, play_box.x, play_box.y);
-	sprite_draw(reset_button, 65, reset_box.x, reset_box.y);
-	sprite_draw(back_button, 66, back_box.x, back_box.y);	
+	if(make_flag == true)
+	{
+		save_box.x = TILEMAP_WIDTH + 20;
+		save_box.y = TILEMAP_HEIGHT - 120;
+		save_box.w = 40;
+		save_box.h = 40;
+		save_button = sprite_load("images/menu_button.png", save_box.w, save_box.h);
+		sprite_draw(save_button, 3, save_box.x, save_box.y);
+	}
+
+	sprite_draw(play_button, 0, play_box.x, play_box.y);
+	sprite_draw(reset_button, 1, reset_box.x, reset_box.y);
+	sprite_draw(back_button, 2, back_box.x, back_box.y);	
 }
 
 void tilemap_click()
@@ -293,6 +315,31 @@ void tilemap_click()
 
 	if(x > TILEMAP_WIDTH || y > TILEMAP_HEIGHT)
 	{
+		if(make_flag == true && rect_intersect(mouse, save_box))
+		{
+			FILE *fp = NULL;
+			fp = fopen("images/made.map", "wb");
+			int i;
+			for(i = 0; i < TILE_MAX; i++)
+			{
+				Tile *tile = &tile_list[i];
+				if(tile->tile_buffer == NULL)
+				{
+					fprintf(fp, "%d ", tile_list[i].tile_type);
+				}
+				else
+				{
+					fprintf(fp, "%d ", tile_list[i].tile_buffer);
+				}
+			}
+			fclose(fp);
+			entity_log_all();
+			entity_free_all();
+			tilemap_clear_tile();
+			menu_flag = true;
+			return;
+		}
+
 		if(rect_intersect(mouse, play_box))
 		{
 			entity_update_all();
@@ -305,12 +352,12 @@ void tilemap_click()
 			tilemap_clear_tile();
 			tilemap_load_animals();
 			play_flag = 0;
-			//m_count = m_max;
 			return;
 		}
 		else if(rect_intersect(mouse, back_box))
 		{
 			menu_flag = true;
+			make_flag = false;
 			tilemap_close_system();
 			entity_free_all();
 			return;
@@ -326,31 +373,93 @@ void tilemap_click()
 	int tile_pos = tpl * mapY + mapX;
 
 	Tile *tile = &tile_list[tile_pos];
-	int type = tile->tile_buffer;
-	
-	if(tile->tile_type != TILE_PLAIN)
-	{
-		return;
-	}
 
-	switch(type)
+	if(make_flag)
 	{
-	case TILE_PLAIN:
-		tile->tile_buffer = TILE_UP;
-		break;
-	case TILE_LEFT:
-		tile->tile_buffer = TILE_UP;
-		break;
-	case TILE_UP:
-		tile->tile_buffer = TILE_RIGHT;
-		break;
-	case TILE_RIGHT:
-		tile->tile_buffer = TILE_DOWN;
-		break;
-	case TILE_DOWN:
-		tile->tile_buffer = TILE_LEFT;
-		break;
+		switch(tile->tile_buffer)
+		{
+		case NULL:
+			tile->tile_buffer = TILE_HOLE;
+			break;
+		case TILE_HOLE:
+			tile->tile_buffer = TILE_BLOCK;
+			break;
+		case TILE_BLOCK:
+			tile->tile_buffer = TILE_MUD;
+			break;
+		case TILE_MUD:
+			tile->tile_buffer = TILE_HOME;
+			break;
+		case TILE_HOME:
+			tile->tile_buffer = TILE_REG;
+			break;
+		case TILE_REG:
+			tile->tile_buffer = TILE_HOVER;
+			break;
+		case TILE_HOVER:
+			tile->tile_buffer = TILE_SPEED;
+			break;
+		case TILE_SPEED:
+			tile->tile_buffer = NULL;
+			break;
+		}
 	}
+	else
+	{
+		int type = tile->tile_buffer;
+	
+		if(tile->tile_type != TILE_PLAIN)
+		{
+			return;
+		}
+
+		switch(type)
+		{
+		case TILE_PLAIN:
+			tile->tile_buffer = TILE_UP;
+			break;
+		case TILE_LEFT:
+			tile->tile_buffer = TILE_UP;
+			break;
+		case TILE_UP:
+			tile->tile_buffer = TILE_RIGHT;
+			break;
+		case TILE_RIGHT:
+			tile->tile_buffer = TILE_DOWN;
+			break;
+		case TILE_DOWN:
+			tile->tile_buffer = TILE_LEFT;
+			break;
+		}
+	}
+}
+
+void tilemap_m_click(State direction)
+{
+	int x, y;
+	SDL_GetMouseState( &x, &y );
+
+	int mapX = x / TILE_WIDTH;
+	int mapY = y / TILE_HEIGHT;
+	int tile_pos = tpl * mapY + mapX;
+
+	Tile *tile = &tile_list[tile_pos];
+
+	animal_initialize(tile->tile_box.x, tile->tile_box.y, direction, "normal_mouse");
+}
+
+void tilemap_c_click(State direction)
+{
+	int x, y;
+	SDL_GetMouseState( &x, &y );
+
+	int mapX = x / TILE_WIDTH;
+	int mapY = y / TILE_HEIGHT;
+	int tile_pos = tpl * mapY + mapX;
+
+	Tile *tile = &tile_list[tile_pos];
+
+	animal_initialize(tile->tile_box.x, tile->tile_box.y, direction, "normal_cat");
 }
 
 void tilemap_remove_tile()
@@ -371,7 +480,6 @@ void tilemap_remove_tile()
 
 	Tile *tile = &tile_list[tile_pos];
 	tile->tile_buffer = NULL;
-	
 }
 
 int tilemap_check_front_tile(Entity *entity) {
@@ -633,6 +741,13 @@ void tilemap_entity_on_special_tile(Entity *entity)
 					entity_free_all();
 					return;
 				}
+				else if(strcmp(level_name, "images/made.map") == 0)
+				{
+					menu_flag = true;
+					tilemap_close_system();
+					entity_free_all();
+					return;
+				}
 			}
 		}
 		else
@@ -664,7 +779,7 @@ void tilemap_load_animals()
 	FILE *fileptr = NULL;
 	m_count = 0;
 
-	fileptr = fopen(animal_positions, "r");
+	fileptr = fopen(animal_positions, "rb");
 	if(!fileptr)
 	{
 		slog("Error: could not open animal position file");

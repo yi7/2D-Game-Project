@@ -1,7 +1,7 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
-#include "string.h"
+#include "stdio.h"
 #include "stdlib.h"
 
 #include "camera.h"
@@ -112,5 +112,7 @@ Entity *entity_intersect_all(Entity *self);
  * @brief frees all entity on the entity system
  */
 void entity_free_all();
+
+void entity_log_all();
 
 #endif

@@ -19,6 +19,7 @@
 extern SDL_Rect tilemap_bound;
 extern int tilemap_width;
 extern int tilemap_height;
+extern int make_flag;
 
 typedef struct
 {
@@ -76,6 +77,8 @@ void tilemap_draw_sidemenu();
  * @brief depending on the mouse position, interact with the ui
  */
 void tilemap_click();
+void tilemap_m_click(State direction);
+void tilemap_c_click(State direction);
 
 /**
  * @brief removes a secondary tile thats on the map
