@@ -48,7 +48,8 @@ void tilemap_initialize_system(char *levelname, char *animal_pos)
 	int i;
 	animal_positions = animal_pos;
 	level_name = levelname;
-	slog("%s, %s\n", levelname, animal_pos);
+	Sound *bg_music = NULL;
+
 	if(TILE_MAX == 0)
 	{
 		slog("Error: no tiles to place on map");

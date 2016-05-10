@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
 	SDL_Surface *optimized_surface = NULL;
 	SDL_Surface *temp = NULL;
 	Sound *bg_music = NULL;
+	Sound *level_music = NULL;
 	int done;
 	const Uint8 *keys;
 	char imagepath[512];
@@ -37,22 +38,16 @@ int main(int argc, char *argv[])
 	game_initialize_system();
 	SDL_ShowCursor(SDL_DISABLE);
 
-	bg_music = sound_load_music("sounds/rainy_devil.mp3");
+	bg_music = sound_load_music("sounds/vanguard_bouncy.mp3");
 	if(!bg_music)
 	{
 		slog("Could not load music\n");
 	}
 	
-	/*bg_music = sound_load_music("sounds/Dark_Engine_DEMO.wav");
-	if(!bg_music->music)
+	level_music = sound_load_music("sounds/chippy_cloud_kid.mp3");
+	if(!level_music)
 	{
-		slog("Error: Music file could not be loaded");	
-	}
-	Mix_PlayMusic(bg_music->music, -1);*/
-	
-	/*if(game_get_image_path_from_file(imagepath, "config.ini"))
-	{
-		temp = IMG_Load(imagepath);
+		slog("Could not load music\n");
 	}
 
 	if(temp)
@@ -61,16 +56,21 @@ int main(int argc, char *argv[])
 		SDL_FreeSurface(temp);
 		
 	}
-	SDL_BlitSurface(optimized_surface, NULL, graphics_surface, NULL);*/
-	//SDL_UpdateWindowSurface(graphics_window);
 
 	SDL_Event e;
 	done = 0;
+
+	int lock = true;
 	do
 	{
 		if(menu_flag)
 		{
 			menu_draw();
+			if(lock == false)
+			{
+				Mix_HaltMusic();
+				lock = true;
+			}
 
 			if(Mix_PlayingMusic() == 0)
 			{
@@ -81,8 +81,16 @@ int main(int argc, char *argv[])
 		{
 			tilemap_render_tile();
 			entity_draw_all();
+			if(lock == true)
+			{
+				Mix_HaltMusic();
+				lock = false;
+			}
 
-			Mix_HaltMusic();
+			if(Mix_PlayingMusic() == 0)
+			{
+				Mix_PlayMusic(level_music->music, -1);
+			}
 		}
 
 		mouse_draw_self();
