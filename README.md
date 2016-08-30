@@ -9,3 +9,4 @@ Video of Final Project: [Final](http://relayfiles.njit.edu/yi7/Students_-_Presen
 
 _Credits to Bo Thompson for some of the tile arts._<br/>
 _Credits to Saki Ikeda for the background art, tile arts and cat mouse sprites._
+_Sounds taken from Osu Game and https://gamesounds.xyz/_<br/>
