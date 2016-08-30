@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 	{
 		slog("Could not load music\n");
 	}
+	Mix_VolumeMusic(5);
 
 	if(temp)
 	{

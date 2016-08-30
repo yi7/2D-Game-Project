@@ -1,17 +1,17 @@
-﻿Build started 3/6/2016 11:13:25 PM.
-     1>Project "D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\2dGameSample\win32\gametest.vcxproj" on node 2 (build target(s)).
+﻿Build started 5/16/2016 11:25:37 PM.
+     1>Project "D:\My Documents\Youken\HOME\YokakaStudio\MouseAlert\win32\gametest.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
-         Creating "Debug\gametest.unsuccessfulbuild" because "AlwaysCreate" was specified.
+         Creating "Debug\MouseAlert.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
          All outputs are up-to-date.
        Link:
          All outputs are up-to-date.
-         gametest.vcxproj -> D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\2dGameSample\win32\..\gametest.exe
+         gametest.vcxproj -> D:\My Documents\Youken\HOME\YokakaStudio\MouseAlert\win32\..\MouseAlert.exe
        FinalizeBuildStatus:
-         Deleting file "Debug\gametest.unsuccessfulbuild".
-         Touching "Debug\gametest.lastbuildstate".
-     1>Done Building Project "D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\2dGameSample\win32\gametest.vcxproj" (build target(s)).
+         Deleting file "Debug\MouseAlert.unsuccessfulbuild".
+         Touching "Debug\MouseAlert.lastbuildstate".
+     1>Done Building Project "D:\My Documents\Youken\HOME\YokakaStudio\MouseAlert\win32\gametest.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.21
+Time Elapsed 00:00:00.05

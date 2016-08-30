@@ -11,15 +11,38 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\animal.c" />
+    <ClCompile Include="..\src\camera.c" />
+    <ClCompile Include="..\src\entity.c" />
     <ClCompile Include="..\src\game.c" />
     <ClCompile Include="..\src\graphics.c" />
+    <ClCompile Include="..\src\menu.c" />
+    <ClCompile Include="..\src\mouse.c" />
+    <ClCompile Include="..\src\simple_logger.c" />
+    <ClCompile Include="..\src\sound.c" />
+    <ClCompile Include="..\src\sprite.c" />
+    <ClCompile Include="..\src\tile.c" />
+    <ClCompile Include="..\src\tilemap.c" />
+    <ClCompile Include="..\src\vector.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\animal.h" />
+    <ClInclude Include="..\src\camera.h" />
+    <ClInclude Include="..\src\entity.h" />
     <ClInclude Include="..\src\graphics.h" />
+    <ClInclude Include="..\src\menu.h" />
+    <ClInclude Include="..\src\mouse.h" />
+    <ClInclude Include="..\src\simple_logger.h" />
+    <ClInclude Include="..\src\sound.h" />
+    <ClInclude Include="..\src\sprite.h" />
+    <ClInclude Include="..\src\tile.h" />
+    <ClInclude Include="..\src\tilemap.h" />
+    <ClInclude Include="..\src\vector.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7FDED120-6E7E-4B36-A32B-C84298D67EDE}</ProjectGuid>
     <RootNamespace>gametest</RootNamespace>
+    <ProjectName>MouseAlert</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -44,12 +67,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\libs\SDL2_ttf-2.0.13\include;D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\libs\SDL2_mixer-2.0.1\include;D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\libs\SDL2_image-2.0.1\include;D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\libs\SDL2-2.0.4\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\My Documents\Youken\HOME\YokakaStudio\libs\SDL2-2.0.4\include;D:\My Documents\Youken\HOME\YokakaStudio\libs\SDL2_image-2.0.1\include;D:\My Documents\Youken\HOME\YokakaStudio\libs\SDL2_mixer-2.0.1\include;D:\My Documents\Youken\HOME\YokakaStudio\libs\SDL2_ttf-2.0.13\include;D:\My Documents\Youken\HOME\YokakaStudio\libs\jansson-2.7\src;D:\My Documents\Youken\HOME\YokakaStudio\libs\glib-2.28\include\glib-2.0;D:\My Documents\Youken\HOME\YokakaStudio\libs\glib-2.28\lib\glib-2.0\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ReferencePath>D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\libs\SDL2_ttf-2.0.13\lib\x86;D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\libs\SDL2_mixer-2.0.1\lib\x86;D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\libs\SDL2_image-2.0.1\lib\x86;D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\libs\SDL2-2.0.4\lib\x86;$(ReferencePath)</ReferencePath>
-    <LibraryPath>D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\libs\SDL2_ttf-2.0.13\lib\x86;D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\libs\SDL2_mixer-2.0.1\lib\x86;D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\libs\SDL2_image-2.0.1\lib\x86;D:\Users\Youken\My Documents\Youken\SCHOOL\IT276\libs\SDL2-2.0.4\lib\x86;$(LibraryPath)</LibraryPath>
+    <ReferencePath>D:\My Documents\Youken\HOME\YokakaStudio\libs\SDL2-2.0.4\lib\x86;D:\My Documents\Youken\HOME\YokakaStudio\libs\SDL2_image-2.0.1\lib\x86;D:\My Documents\Youken\HOME\YokakaStudio\libs\SDL2_mixer-2.0.1\lib\x86;D:\My Documents\Youken\HOME\YokakaStudio\libs\SDL2_ttf-2.0.13\lib\x86;$(ReferencePath)</ReferencePath>
+    <LibraryPath>D:\My Documents\Youken\HOME\YokakaStudio\libs\SDL2-2.0.4\lib\x86;D:\My Documents\Youken\HOME\YokakaStudio\libs\SDL2_image-2.0.1\lib\x86;D:\My Documents\Youken\HOME\YokakaStudio\libs\SDL2_mixer-2.0.1\lib\x86;D:\My Documents\Youken\HOME\YokakaStudio\libs\SDL2_ttf-2.0.13\lib\x86;D:\My Documents\Youken\HOME\YokakaStudio\libs\glib-2.28\lib;$(LibraryPath)</LibraryPath>
     <OutDir>..\</OutDir>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\Libraries\SDL2_ttf-2.0.12\include;C:\Libraries\SDL2_mixer-2.0.0\include;C:\Libraries\SDL2_image-2.0.0\include;C:\Libraries\SDL2-2.0.3\include;$(IncludePath)</IncludePath>
@@ -72,7 +96,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

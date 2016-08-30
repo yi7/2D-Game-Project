@@ -495,7 +495,7 @@ int tilemap_check_front_tile(Entity *entity) {
 	Tile *tile_check;
 
 	Sound *bump = sound_load_chunk("sounds/normal-hitfinish.wav");
-
+	
 	switch(entity->state)
 	{
 	case UP:
@@ -539,6 +539,7 @@ void tilemap_entity_front(Entity *entity)
 	if(tilemap_check_front_tile(entity) == TILE_BLOCK || tilemap_check_front_tile(entity) == -1)
 	{
 		Sound *change = sound_load_chunk("sounds/soft-hitnormal.wav");
+		Mix_VolumeChunk(change->chunk, 10);
 		Mix_PlayChannel(-1, change->chunk, 0);
 		switch(entity->state)
 		{
@@ -602,6 +603,10 @@ void tilemap_entity_on_special_tile(Entity *entity)
 	Sound *change = sound_load_chunk("sounds/soft-hitnormal.wav");
 	Sound *success = sound_load_chunk("sounds/sectionpass.mp3");
 	Sound *fail = sound_load_chunk("sounds/sectionfail.mp3");
+	Mix_VolumeChunk(fall->chunk, 10);
+	Mix_VolumeChunk(change->chunk, 10);
+	Mix_VolumeChunk(success->chunk, 10);
+	Mix_VolumeChunk(fail->chunk, 10);
 
 	int mapX = x / TILE_WIDTH;
 	int mapY = y / TILE_HEIGHT;
